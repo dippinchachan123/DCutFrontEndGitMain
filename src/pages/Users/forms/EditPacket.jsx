@@ -9,7 +9,7 @@ import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Cart } from "../../../apis/api.cart";
 import { User } from "../../../apis/api.user";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Staff } from "../../../apis/api.staff";

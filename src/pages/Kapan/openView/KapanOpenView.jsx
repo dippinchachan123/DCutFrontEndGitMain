@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Cut } from "../../../apis/api.cut";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 
 
 const Single = ({postProcess}) => {  

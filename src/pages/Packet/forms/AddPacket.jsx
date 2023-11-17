@@ -8,7 +8,7 @@ import { getSearchComboBoxOptions } from "../../../helpers/functions";
 import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Cart } from "../../../apis/api.cart";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 
 
 const New = () => {

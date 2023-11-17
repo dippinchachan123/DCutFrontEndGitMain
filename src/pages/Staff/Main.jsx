@@ -2,7 +2,7 @@ import "./list.scss"
 import Sidebar from "../../components/sidebar/Sidebar"
 import Navbar from "../../components/navbar/Navbar"
 import Datatable from "./datatable/StaffDataTable"
-import { useRequireAuth, useUser } from "../../context/kapanContext";
+import {  useUser } from "../../context/kapanContext";
 
 const Staff = () => {
   const [user,setUser] = useUser();

@@ -6,7 +6,7 @@ import { User } from "../../apis/api.user"
 import notificationPopup from "../../helpers/notifications";
 import { errors, success } from "../../enums/messages"
 import { useNavigate } from "react-router-dom"
-import { useRequireAuth, useUser } from "../../context/kapanContext";
+import {  useUser } from "../../context/kapanContext";
 
 
 const Login = () => {

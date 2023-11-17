@@ -32,45 +32,46 @@ const Sidebar = () => {
   return user && (
     <div className="sidebar">
       <div className="top">
-        <div ClassName = "clickables" onClick = {navigate("/")} style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
           <span className="logo">SBG</span>
-        </div>
+        </Link>
       </div>
       <hr />
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-          <li onClick = {()=>navigate("/")}>
-            <div ClassName = "clickables"  style={{ textDecoration: "none" }}>
-              <DashboardIcon className="icon" />
-              <span>Dashboard</span>            
-            </div>
-          </li>
-          <li onClick = {()=>navigate("/kapans")}>
-            <div ClassName = "clickables"  style={{ textDecoration: "none" }}>
-              <FactoryIcon className="icon" />
-              <span>Processes</span>
-            </div>
-          </li>
-          <li onClick = {()=>navigate("/PPkapans/1")}>
-            <div ClassName = "clickables"  style={{ textDecoration: "none" }}>
-              <ConstructionIcon className="icon" />
-              <span>Post Processes</span>
-            </div>
-          </li>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <li>
+                <DashboardIcon className="icon" />
+                <span>Dashboard</span>    
+              </li>
+        
+            </Link>
+            <Link to="/kapans" style={{ textDecoration: "none" }}>
+              <li>
+                <FactoryIcon className="icon" />
+                <span>Processes</span>
+              </li>
+            </Link>
+            <Link to="/PPkapans/1" style={{ textDecoration: "none" }}>
+              <li>
+                <ConstructionIcon className="icon" />
+                <span>Post Processes</span>
+              </li>
+            </Link>
           <p className="title">LISTS</p>
-          {Main.isSuperAdmin(user) && <div ClassName = "clickables" onClick = {()=>navigate("/users")} style={{ textDecoration: "none" }}>
+          {Main.isSuperAdmin(user) && <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
               <PersonOutlineIcon className="icon" />
               <span>Users</span>
             </li>
-          </div>}
-          <div ClassName = "clickables" onClick = {()=>navigate("/products")} style={{ textDecoration: "none" }}>
+          </Link>}
+          <Link  style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
               <span>Products</span>
             </li>
-          </div>
+          </Link>
           <li>
             <CreditCardIcon className="icon" />
             <span>Orders</span>
@@ -89,15 +90,17 @@ const Sidebar = () => {
             <span>Notifications</span>
           </li>
           <p className="title">SERVICE</p>
-          {(Main.isSuperAdmin(user) || Main.isAdmin(user)) && <li>
-            <div ClassName = "clickables" onClick = {()=>navigate("/Staffs")} style={{ textDecoration: "none" }}>            
-              <SettingsSystemDaydreamOutlinedIcon className="icon" />
-              <span>Staff</span>
-            </div>
-          </li>}
-          <li onClick={()=> {console.log(Main.isAdmin(user),Main.isStaff(user),Main.isSuperAdmin(user))}}>
+          {(Main.isSuperAdmin(user) || Main.isAdmin(user)) && 
+            <Link to="/Staffs" style={{ textDecoration: "none" }}> 
+              <li>           
+                <SettingsSystemDaydreamOutlinedIcon className="icon" />
+                <span>Staff</span>
+              </li>
+            </Link>
+          }
+          <li>
             <PsychologyOutlinedIcon className="icon" />
-            <span >Logs</span>
+            <span onClick={()=> {console.log(Main.isAdmin(user),Main.isStaff(user),Main.isSuperAdmin(user))}}>Logs</span>
           </li>
           <li>
             <SettingsApplicationsIcon className="icon" />
@@ -108,13 +111,15 @@ const Sidebar = () => {
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
           </li>
-          <li onClick={handleLogOut}>
-            <ExitToAppIcon className="icon" />
-            <span
-              >
-              Logout
-            </span>
-          </li>
+          <span onClick={handleLogOut}>
+            <li>
+              <ExitToAppIcon className="icon" />
+              <span>
+                Logout
+              </span>
+            </li>
+          </span>
+          
         </ul>
       </div>
       <div className="bottom">

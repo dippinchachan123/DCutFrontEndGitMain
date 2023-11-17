@@ -11,7 +11,7 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Cart } from "../../../apis/api.cart";
 import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 
 
 const Single = ({postProcess}) => {

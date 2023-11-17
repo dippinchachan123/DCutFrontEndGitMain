@@ -8,7 +8,7 @@ import { getSearchComboBoxOptions } from "../../../helpers/functions";
 import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Cut } from "../../../apis/api.cut";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 
 
 const Edit  = ({postProcess}) => {

@@ -28,20 +28,8 @@ export function UserProvider({ children }) {
   );
 }
 
-
 export function useUser() {
   return useContext(UserContext);
 }
-
-export function useRequireAuth(user) {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user,navigate]);
-}
-
 
 

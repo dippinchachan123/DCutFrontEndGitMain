@@ -8,7 +8,7 @@ import axios from "axios";
 import { Staff } from "../../apis/api.staff";
 import {getSearchComboBoxOptions } from "../../helpers/functions";
 import Select from "react-select";
-import { useRequireAuth, useUser } from "../../context/kapanContext";
+import {  useUser } from "../../context/kapanContext";
 
 
 const New  = ({ inputs, title ,handleChange,handleSubmit,mode}) => {

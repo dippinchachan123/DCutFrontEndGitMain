@@ -4,7 +4,7 @@ import Navbar from "../../../components/navbar/Navbar";
 import Datatable from "../dataTable/CartDataTable";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 
 const Single = ({postProcess}) => {  
   const {id} = useParams()

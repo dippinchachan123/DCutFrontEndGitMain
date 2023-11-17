@@ -14,7 +14,7 @@ import { Select, MenuItem, Button,TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Fields } from "../../../apis/api.fields";
 import { PRE_PROCESS_TYPES } from "../../../enums/processes";
-import { useRequireAuth, useUser } from "../../../context/kapanContext";
+import {  useUser } from "../../../context/kapanContext";
 
 
 const Edit  = ({postProcess}) => {
