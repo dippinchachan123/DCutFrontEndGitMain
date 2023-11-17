@@ -1,0 +1,39 @@
+    .notification-popup {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        animation: slideInRight 0.5s ease-in-out;
+    }
+
+    .notification-popup .notification-content {
+        font-weight: bold; /* Make text bold */
+        font-size: 20px;
+    }
+    
+    .notification-popup.success {
+        background-color: #00ff00; /* Change to your desired success color */
+    }
+    
+    .notification-popup.error {
+        background-color: #ff0000; /* Change to your desired error color */
+    }
+    
+    .notification-content {
+        font-size: 20px;
+    }
+    
+    @keyframes slideInRight {
+        0% {
+        transform: translateX(100%);
+        }
+        100% {
+        transform: translateX(0);
+        }
+    }
+    

@@ -1,0 +1,70 @@
+.LoginPage{
+    background-color: blue;
+    height: 100vh; 
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    .LoginForm{
+        height: 400px;
+        width: 400px;
+        padding: 70px;
+        background-color: white;
+        border-radius: 15px;     
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        row-gap: 50px;
+
+        .Top{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            label{
+                color: rgb(152, 152, 152);
+                font-size: 42px;
+                font-weight: 900;
+            }
+        }
+
+        .Mid{
+            display: flex;
+            flex-direction: column;
+            row-gap: 50px;
+
+            .field{
+                padding: 10px;
+                border-radius: 15px;
+                border-color: gray;
+                font-size: 32px;
+                width: 400px;
+                height: 50px;
+                background-color: rgb(211, 211, 211);
+            }
+        }
+        button {
+            width: 35%;
+            height: 130%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+          }
+      
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        
+            &:hover {
+                background-color: #0056b3;
+            }
+        }
+        .Bottom{
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+        }
+    }
+}

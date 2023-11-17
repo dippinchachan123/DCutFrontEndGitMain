@@ -1,0 +1,121 @@
+.new {
+  width: 100%;
+  display: flex;
+
+  .newContainer {
+    flex: 6;
+
+    .top,
+    .bottom {
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      padding: 10px;
+      margin: 20px;
+      display: flex;
+
+      h1 {
+        color: lightgray;
+        font-size: 20px;
+      }
+
+      .left {
+        display: flex;
+        flex: 1;
+        text-align: center;
+        flex-direction: column;
+
+        img {
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-left: 25%;
+          margin-top: 15%;
+          margin-bottom: 5%;
+        }
+
+      }
+
+      .right {
+        flex: 4;
+
+        form {
+          display: flex;
+          flex-direction: row;
+          padding-left: 158px;
+          flex-wrap: wrap;
+          gap: 30px;
+          column-gap: 161px;
+
+          .formInput {
+            width: 40%;
+
+            label {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+
+              .icon {
+                cursor: pointer;
+              }
+            }
+
+            input {
+              width: 100%;
+              padding: 5px;
+              border: none;
+              border-bottom: 1px solid gray;
+            }
+
+            Select {
+              width: 100%;
+              padding: 5px;
+              border: none;
+              border-bottom: 1px solid gray;
+            }
+            .selectBoxContainer{
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              .SelectBox {
+                min-width: 330px;
+                margin: 10px;
+                margin-left: 0;
+
+                .AddOptions{
+                  width: 30px;
+                  height: 30px;
+                  margin-left: 0;
+                }
+              }
+            }
+            
+          }
+
+
+        }
+
+        .button {
+          width: 120px;
+          padding: 10px;
+          border: none;
+          background-color: teal;
+          border-radius: 25px;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+          margin-top: 20px;
+          margin-left: 85%;
+          text-align: center;
+          
+          &:hover{
+            transform: scale(1.1);
+          }
+        }
+
+      }
+    }
+  }
+
+
+}

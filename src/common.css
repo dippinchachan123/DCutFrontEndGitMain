@@ -1,0 +1,23 @@
+@keyframes blink {
+    
+    0% {
+      font-size: 18px;
+      color: red;
+    }
+    80% {
+      font-size: 18px;
+      color: black;
+    }
+    100% {
+      font-size: 18px;
+      color: red;
+    }
+  }
+  
+.BlinkCell {
+animation: none;
+}
+
+.blink {
+animation: blink 1s linear infinite;
+}
