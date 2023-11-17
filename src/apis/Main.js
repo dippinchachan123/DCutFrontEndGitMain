@@ -6,10 +6,10 @@ export class Main {
     static DomainName = config.BACKEND_DOMAIN
 
     static authenticate(){
-        if(!Main.getCurrentUser()){
-            window.location.href = '/'
-            return true
-        }
+        // if(!Main.getCurrentUser()){
+        //     window.location.href = '/'
+        //     return true
+        // }
         return false
     }
     static getCurrentUser() {

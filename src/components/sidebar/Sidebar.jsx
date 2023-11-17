@@ -32,45 +32,45 @@ const Sidebar = () => {
   return user && (
     <div className="sidebar">
       <div className="top">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <div ClassName = "clickables" onClick = {navigate("/")} style={{ textDecoration: "none" }}>
           <span className="logo">SBG</span>
-        </Link>
+        </div>
       </div>
       <hr />
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
           <li>
-            <Link to="/" style={{ textDecoration: "none" }}>
+            <div ClassName = "clickables" onClick = {()=>navigate("/")} style={{ textDecoration: "none" }}>
               <DashboardIcon className="icon" />
               <span>Dashboard</span>            
-            </Link>
+            </div>
           </li>
           <li>
-            <Link to="/kapans" style={{ textDecoration: "none" }}>
+            <div ClassName = "clickables" onClick = {()=>navigate("/kapans")} style={{ textDecoration: "none" }}>
               <FactoryIcon className="icon" />
               <span>Processes</span>
-            </Link>
+            </div>
           </li>
           <li>
-            <Link to="/PPkapans/1" style={{ textDecoration: "none" }}>
+            <div ClassName = "clickables" onClick = {()=>navigate("/PPkapans/1")} style={{ textDecoration: "none" }}>
               <ConstructionIcon className="icon" />
               <span>Post Processes</span>
-            </Link>
+            </div>
           </li>
           <p className="title">LISTS</p>
-          {Main.isSuperAdmin(user) && <Link to="/users" style={{ textDecoration: "none" }}>
+          {Main.isSuperAdmin(user) && <div ClassName = "clickables" onClick = {()=>navigate("/users")} style={{ textDecoration: "none" }}>
             <li>
               <PersonOutlineIcon className="icon" />
               <span>Users</span>
             </li>
-          </Link>}
-          <Link to="/products" style={{ textDecoration: "none" }}>
+          </div>}
+          <div ClassName = "clickables" onClick = {()=>navigate("/products")} style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
               <span>Products</span>
             </li>
-          </Link>
+          </div>
           <li>
             <CreditCardIcon className="icon" />
             <span>Orders</span>
@@ -90,10 +90,10 @@ const Sidebar = () => {
           </li>
           <p className="title">SERVICE</p>
           {(Main.isSuperAdmin(user) || Main.isAdmin(user)) && <li>
-            <Link to="/Staffs" style={{ textDecoration: "none" }}>            
+            <div ClassName = "clickables" onClick = {()=>navigate("/Staffs")} style={{ textDecoration: "none" }}>            
               <SettingsSystemDaydreamOutlinedIcon className="icon" />
               <span>Staff</span>
-            </Link>
+            </div>
           </li>}
           <li>
             <PsychologyOutlinedIcon className="icon" />
