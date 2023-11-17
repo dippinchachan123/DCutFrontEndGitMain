@@ -40,20 +40,20 @@ const Sidebar = () => {
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-          <li>
-            <div ClassName = "clickables" onClick = {()=>navigate("/")} style={{ textDecoration: "none" }}>
+          <li onClick = {()=>navigate("/")}>
+            <div ClassName = "clickables"  style={{ textDecoration: "none" }}>
               <DashboardIcon className="icon" />
               <span>Dashboard</span>            
             </div>
           </li>
-          <li>
-            <div ClassName = "clickables" onClick = {()=>navigate("/kapans")} style={{ textDecoration: "none" }}>
+          <li onClick = {()=>navigate("/kapans")}>
+            <div ClassName = "clickables"  style={{ textDecoration: "none" }}>
               <FactoryIcon className="icon" />
               <span>Processes</span>
             </div>
           </li>
-          <li>
-            <div ClassName = "clickables" onClick = {()=>navigate("/PPkapans/1")} style={{ textDecoration: "none" }}>
+          <li onClick = {()=>navigate("/PPkapans/1")}>
+            <div ClassName = "clickables"  style={{ textDecoration: "none" }}>
               <ConstructionIcon className="icon" />
               <span>Post Processes</span>
             </div>
@@ -95,9 +95,9 @@ const Sidebar = () => {
               <span>Staff</span>
             </div>
           </li>}
-          <li>
+          <li onClick={()=> {console.log(Main.isAdmin(user),Main.isStaff(user),Main.isSuperAdmin(user))}}>
             <PsychologyOutlinedIcon className="icon" />
-            <span onClick={()=> {console.log(Main.isAdmin(user),Main.isStaff(user),Main.isSuperAdmin(user))}}>Logs</span>
+            <span >Logs</span>
           </li>
           <li>
             <SettingsApplicationsIcon className="icon" />
@@ -108,10 +108,9 @@ const Sidebar = () => {
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
           </li>
-          <li>
+          <li onClick={handleLogOut}>
             <ExitToAppIcon className="icon" />
             <span
-              onClick={handleLogOut}
               >
               Logout
             </span>

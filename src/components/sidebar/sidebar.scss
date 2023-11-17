@@ -48,12 +48,14 @@
 
         &:hover {
           background-color: #ece8ff;
-          transform: scale(1.05);
         }
-
+        
         .icon {
           font-size: 18px;
           color: #7451f8;
+          &:hover {
+            transform: scale(1.05);
+          }
         }
 
         span{
