@@ -12,6 +12,7 @@ import { errors, success } from "../../../enums/messages";
 import IssueForm from "../../Forms/issuePacketForm";
 import IssuedPacketForm from "../../Forms/issuePacketOpen";
 import BoilReturnForm from "../../Forms/returnWeightSubPacket";
+import { generatePDF } from "../../PDFs/printPackets";
 
 const Datatable = ({ ids,postProcess }) => {
   const [data, setData] = useState([]);
@@ -550,7 +551,10 @@ const Datatable = ({ ids,postProcess }) => {
       <div className="datatableTitle">
         Packets<h5>{(postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_", " ")}</h5>
         <div>
-          {process != PRE_PROCESS_TYPES.LASER_LOTING?<button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '20px' }}>
+        <button onClick={() => generatePDF({kapanId: kapanId, process  : process,cutId: cutId},selectedEntries(selectedRowIds))} className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
+            Print
+          </button>
+          {process != PRE_PROCESS_TYPES.LASER_LOTING?<button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '25px' }}>
             Issue Packets
           </button>:""}
           <button onClick={() => navigate(`/${postProcess?"PP":""}Cart/New/${ids}`)} className="link" style={{ alignSelf: 'right' }}>
