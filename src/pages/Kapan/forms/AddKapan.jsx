@@ -54,6 +54,12 @@ const New  = () => {
     ];
 
     const handleSubmit = (e)=>{
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
+        
         Kapan.addKapan(data)
         .then(res => {
             if(res.err){
@@ -67,6 +73,17 @@ const New  = () => {
         .catch(err => {
             notificationPopup(errors.SAVE_ERROR,"error")
         })
+    }
+
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(!data.weight){
+            return {status : false,msg : "Invalid Weight!!"}
+        }
+        if(!data.pieces){
+            return {status : false,msg : "Invalid Pieces!!"}
+        }
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e)=>{

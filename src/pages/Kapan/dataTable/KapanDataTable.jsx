@@ -8,13 +8,15 @@ import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Kapan } from "../../../apis/api.kapan";
 import { Cut } from "../../../apis/api.cut";
-import { useKapan } from "../../../context/kapanContext";
+import { useKapan, useUser } from "../../../context/kapanContext";
 import { useNavigate } from 'react-router-dom';
 import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
+import { Main } from "../../../apis/Main";
 
 const Datatable = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const [user] = useUser();
 
   const handleDelete = (id) => {
     Kapan.deleteKapanByID(id)
@@ -72,18 +74,18 @@ const Datatable = () => {
             >
               View
             </div>
-            <div
+            {!Main.isStaff(user) && <div
               className="editButton"
               onClick={() => handleEdit(params.row.id)}
             >
               Edit
-            </div>
-            <div
+            </div>}
+            {!Main.isStaff(user) && <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
             >
               Delete
-            </div>
+            </div>}
           </div>
         );
       },
@@ -94,9 +96,9 @@ const Datatable = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Kapans
-        <Link to={`/kapans/new` + ""} className="link">
+        {!Main.isStaff(user) && <Link to={`/kapans/new` + ""} className="link">
           Add New
-        </Link>
+        </Link>}
       </div>
       <DataTableInfoBox infoData={[{label : "Weight",value : 100},{label : "Pieces",value : 100}]}/>
       <DataGrid

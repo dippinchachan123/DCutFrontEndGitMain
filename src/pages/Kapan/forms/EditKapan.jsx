@@ -10,16 +10,17 @@ import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Kapan } from "../../../apis/api.kapan";
 import {  useUser } from "../../../context/kapanContext";
+import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 
 
 const Edit  = () => {
     const [data,setData] = useState({status : "PENDING",weight : 0});
     const {id} = useParams();
     const navigate = useNavigate();
+    const [OriginalData,setOriginalData] = useState({})
 
     const [user,setUser] = useUser();
     
-
     const title = "Edit New Kapan"
 
     const inputs = [
@@ -62,6 +63,11 @@ const Edit  = () => {
     ];
 
     const handleSubmit = (e)=>{
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
         Kapan.editKapanByID(id,data)
         .then(res => {
             if(res.err){
@@ -75,6 +81,20 @@ const Edit  = () => {
         .catch(err => {
             notificationPopup(errors.SAVE_ERROR,"error")
         })
+    }
+    function validate(data){
+
+        console.log("Validating Data : ",data)
+        if(!data.weight){
+            return {status : false,msg : "Invalid Weight!!"}
+        }
+        if(!data.pieces){
+            return {status : false,msg : "Invalid Pieces!!"}
+        }
+        if(data.weight - OriginalData.cutsWeight < 0){
+            return {status : false,msg : `Weight Limit deficit by ${-(data.weight - OriginalData.cutsWeight)}!!`}
+        }
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e)=>{
@@ -104,6 +124,7 @@ const Edit  = () => {
             }
             else{
                 setData({...res.data[0]})
+                setOriginalData({...res.data[0]})
             }
         })
         .catch(err => {
@@ -119,9 +140,9 @@ const Edit  = () => {
             <div className="top">
                 <h1>{title}</h1>
             </div>
+            <DataTableInfoBox infoData={[{label : "Weight left", value : (data.weight - OriginalData.cutsWeight)}]}
+            style={{margin : '20px'}}/>
             <div className="bottom">  
-            
-
             <div className="right">
                 <form className="formInput">
                 {inputs.map((input) => {

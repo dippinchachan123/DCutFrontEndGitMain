@@ -9,12 +9,17 @@ import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Cut } from "../../../apis/api.cut";
 import {  useUser } from "../../../context/kapanContext";
+import { Kapan } from "../../../apis/api.kapan";
+import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 
 
 const Edit  = ({postProcess}) => {
     const [data,setData] = useState({status : "PENDING",weight : 0});
     const [kapanId,id] = useParams().id.split("-").map(ele => parseInt(ele));
     const navigate = useNavigate();
+    const [kapanIn,setKapanIn] = useState({});
+    const [OriginalData,setOriginalData] = useState({})
+
 
     const [user,setUser] = useUser();
     
@@ -56,6 +61,11 @@ const Edit  = ({postProcess}) => {
 
     const handleSubmit = (e)=>{
         console.log("Data : ",data)
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
         Cut.editCutByID(kapanId,id,data,postProcess)
         .then(res => {
             if(res.err || !res.data){
@@ -70,6 +80,21 @@ const Edit  = ({postProcess}) => {
         .catch(err => {
             notificationPopup(errors.SAVE_ERROR,"error")
         })
+    }
+    
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(!data.weight){
+            return {status : false,msg : "Invalid Weight!!"}
+        }
+        if(!data.pieces){
+            return {status : false,msg : "Invalid Pieces!!"}
+        }
+        if(kapanIn.weight - kapanIn.cutsWeight - data.weight + OriginalData.weight < 0){
+            return {status : false,msg : `Weight Limit Excedded by ${-(kapanIn.weight - kapanIn.cutsWeight - data.weight + + OriginalData.weight)}!!`}
+        }
+        
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e)=>{
@@ -98,10 +123,28 @@ const Edit  = ({postProcess}) => {
             }
             else{
                 setData(res.data[0].cuts[0])
+                setOriginalData({...res.data[0].cuts[0]})
             }
         })
         .catch(err => {
             notificationPopup(errors.SAVE_ERROR,"error")
+        })
+    },[])
+
+    useEffect(()=>{
+        Kapan.getKapanByID(kapanId)
+        .then(res => {
+            console.log(res)
+            if(!res.err){
+                setKapanIn(res.data[0])
+            }
+            else{
+               throw new Error("Error in loading kapan Weight!!")
+            }
+        })
+        .catch(err => {
+            
+            notificationPopup("Error in loading kapan Weight!!","error")
         })
     },[])
     
@@ -113,6 +156,8 @@ const Edit  = ({postProcess}) => {
             <div className="top">
                 <h1>{title}</h1>
             </div>
+            <DataTableInfoBox infoData={[{label : "Kapan Weight left", value : (kapanIn.weight || 0)- (kapanIn.cutsWeight || 0) - (data.weight || 0) + (OriginalData.weight || 0)}]}
+            style={{margin : '20px'}}/>
             <div className="bottom">  
 
             <div className="right">

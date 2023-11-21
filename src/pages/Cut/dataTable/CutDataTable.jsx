@@ -9,9 +9,12 @@ import { Cut } from "../../../apis/api.cut";
 import { useNavigate } from 'react-router-dom';
 import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 import { Kapan } from "../../../apis/api.kapan";
+import { useUser } from "../../../context/kapanContext";
+import { Main } from "../../../apis/Main";
 
 const Datatable = ({postProcess}) => {
   const [data, setData] = useState([]);
+  const [user] = useUser();
   let kapanId = parseInt(useParams().id);
   if(postProcess){
     kapanId = 1
@@ -73,18 +76,18 @@ const Datatable = ({postProcess}) => {
             >
               View
             </div>
-            <div
+            {!Main.isStaff(user) && <div
               className="editButton"
               onClick={() => handleEdit(params.row.id)}
             >
               Edit
-            </div>
-            <div
+            </div>}
+            {!Main.isStaff(user) && <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
             >
               Delete
-            </div>
+            </div>}
           </div>
         );
       },
@@ -95,9 +98,9 @@ const Datatable = ({postProcess}) => {
     <div className="datatable">
       <div className="datatableTitle">
         {postProcess?"Post Process":"Cuts"}
-        <Link to={`/${postProcess?"PP":""}Cuts/new/${kapanId}`} className="link">
+        {!Main.isStaff(user) && <Link to={`/${postProcess?"PP":""}Cuts/new/${kapanId}`} className="link">
           Add New
-        </Link>
+        </Link>}
       </div>
       <DataTableInfoBox infoData={[{label : "Weight",value : 100},{label : "Pieces",value : 100}]}/>
       <DataGrid

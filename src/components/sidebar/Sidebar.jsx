@@ -40,33 +40,40 @@ const Sidebar = () => {
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-            <Link to="/home" style={{ textDecoration: "none" }}>
+            {!Main.isStaff(user) && <Link to="/home" style={{ textDecoration: "none" }}>
               <li>
                 <DashboardIcon className="icon" />
                 <span>Dashboard</span>    
               </li>
-        
-            </Link>
-            <Link to="/kapans" style={{ textDecoration: "none" }}>
+            </Link>}
+            {!(Main.isStaff(user) && Main.isPostProcess(user)) && <Link to="/kapans" style={{ textDecoration: "none" }}>
               <li>
                 <FactoryIcon className="icon" />
                 <span>Processes</span>
               </li>
-            </Link>
-            <Link to="/PPkapans/1" style={{ textDecoration: "none" }}>
+            </Link>}
+            {!(Main.isStaff(user) && Main.isPreProcess(user)) && <Link to="/PPkapans/1" style={{ textDecoration: "none" }}>
               <li>
                 <ConstructionIcon className="icon" />
                 <span>Post Processes</span>
               </li>
-            </Link>
-          <p className="title">LISTS</p>
-          {Main.isSuperAdmin(user) && <Link to="/users" style={{ textDecoration: "none" }}>
+            </Link>}
+          {!Main.isStaff(user) && <p className="title">LISTS</p>}
+          {!Main.isStaff(user) && <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
               <PersonOutlineIcon className="icon" />
               <span>Users</span>
             </li>
           </Link>}
-          <Link  style={{ textDecoration: "none" }}>
+          {(Main.isSuperAdmin(user) || Main.isAdmin(user)) && 
+            <Link to="/Staffs" style={{ textDecoration: "none" }}> 
+              <li>           
+                <SettingsSystemDaydreamOutlinedIcon className="icon" />
+                <span>Staff</span>
+              </li>
+            </Link>
+          }
+          {/* <Link  style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
               <span>Products</span>
@@ -88,29 +95,21 @@ const Sidebar = () => {
           <li>
             <NotificationsNoneIcon className="icon" />
             <span>Notifications</span>
-          </li>
-          <p className="title">SERVICE</p>
-          {(Main.isSuperAdmin(user) || Main.isAdmin(user)) && 
-            <Link to="/Staffs" style={{ textDecoration: "none" }}> 
-              <li>           
-                <SettingsSystemDaydreamOutlinedIcon className="icon" />
-                <span>Staff</span>
-              </li>
-            </Link>
-          }
+          </li> */}
+          {!Main.isStaff(user) && <p className="title">SERVICE</p>}
           <li>
             <PsychologyOutlinedIcon className="icon" />
             <span onClick={()=> {console.log(Main.isAdmin(user),Main.isStaff(user),Main.isSuperAdmin(user))}}>Logs</span>
           </li>
-          <li>
+          {/* <li>
             <SettingsApplicationsIcon className="icon" />
             <span>Settings</span>
-          </li>
+          </li> */}
           <p className="title">USER</p>
-          <li>
+          {/* <li>
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
-          </li>
+          </li> */}
           <span onClick={handleLogOut}>
             <li>
               <ExitToAppIcon className="icon" />

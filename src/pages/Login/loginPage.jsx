@@ -7,6 +7,7 @@ import notificationPopup from "../../helpers/notifications";
 import { errors, success } from "../../enums/messages"
 import { useNavigate } from "react-router-dom"
 import {  useUser } from "../../context/kapanContext";
+import { Main } from "../../apis/Main"
 
 
 const Login = () => {
@@ -46,7 +47,7 @@ const Login = () => {
                 if(res.data.valid){
                     notificationPopup(res.msg,"success")
                     setUser(res.data.data[0]);
-                    navigate('/home')
+                    navigate(Main.isStaff(user)?(Main.isPostProcess(user)?'/PPkapans/1':'/kapans'):'/home')
                 }else{
                     notificationPopup(res.msg,"error")
                 }
@@ -57,10 +58,7 @@ const Login = () => {
     }
 
     useEffect(() => {
-        const savedCred = JSON.parse(localStorage.getItem('user'));
-        if(savedCred){
-            setData({...savedCred})
-        }
+        localStorage.setItem("user",null)
     },[])
     
     return (

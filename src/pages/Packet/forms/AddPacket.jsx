@@ -9,18 +9,18 @@ import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Cart } from "../../../apis/api.cart";
 import {  useUser } from "../../../context/kapanContext";
+import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 
 
 const New = () => {
     const ids = useParams().id;
     const [kapanId, cutId, process, packetId] = ids.split("-");
     const [user,setUser] = useUser();
+    const [packetIn,setPacketIn] = useState({});
+
     
-
     const [data, setData] = useState({ status: "PENDING" });
-
     const navigate = useNavigate();
-
     const title = "Add Sub Packet";
 
     const inputs = [
@@ -48,16 +48,15 @@ const New = () => {
             label: "MMValue",
             type: "text",
         },
-        {
-            id: 6,
-            label: "Status",
-            type: "select",
-            options: ["PENDING", "IN-PROCESS", "PROCESSED"]
-        },
 
     ];
 
     const handleSubmit = (e) => {
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
         Cart.addSPacket(kapanId, cutId, process, packetId, data)
             .then(res => {
                 if (res.err) {
@@ -71,8 +70,24 @@ const New = () => {
             .catch(err => {
                 notificationPopup(errors.SAVE_ERROR, "error")
             })
+    };
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(!data.weight){
+            return {status : false,msg : "Invalid Weight!!"}
+        }
+        if(!data.pieces){
+            return {status : false,msg : "Invalid Pieces!!"}
+        }
+        if(!data.mmvalue){
+            return {status : false,msg : "Invalid MM Value!!"}
+        }
+        if(packetIn.weight - packetIn.subPacketsDetails.totalWeightIn - data.weight < 0){
+            return {status : false,msg : `Weight Limit Excedded by ${-(packetIn.weight - packetIn.subPacketsDetails?.totalWeightIn - data.weight)}!!`}
+        }
+        
+        return {status : true,msg : ""}
     }
-
     const handleChange = (e) => {
         const name = e.target.name
         const type = e.target.type;
@@ -89,7 +104,24 @@ const New = () => {
         }
 
         setData({ ...data, [name]: value, size: size.toFixed(2) })
-    }
+    };
+
+    useEffect(()=>{
+        Cart.getPacket(kapanId,cutId,process,packetId)
+        .then(res => {
+            console.log(res)
+            if(!res.err){
+                setPacketIn(res.data[0].packets[0])
+            }
+            else{
+               throw new Error("Error in loading kapan Weight!!")
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            notificationPopup("Error in loading kapan Weight!!","error")
+        })
+    },[])
 
     return (
         <div className="new">
@@ -99,27 +131,9 @@ const New = () => {
                 <div className="top">
                     <h1>{title}</h1>
                 </div>
+                <DataTableInfoBox infoData={[{label : "Main Packet Weight left", value : (packetIn.weight || 0) - (packetIn.subPacketsDetails?.totalWeightIn || 0) - (data.weight || 0)}]}
+                style={{margin : '20px'}}/>
                 <div className="bottom">
-                    <div className="left">
-                        <label htmlFor="file">
-                            <img
-                                src={
-                                    data?.img
-                                        ? URL.createObjectURL(data?.img)
-                                        : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-                                }
-                                alt=""
-                            />
-                            {/* <DriveFolderUploadOutlinedIcon className="icon" /> */}
-                            <input className="imageInput"
-                                name="img"
-                                type="file"
-                                id="file"
-                                onChange={handleChange}
-                                style={{ display: "none" }}
-                            />
-                        </label>
-                    </div>
                     <div className="right">
                         <form className="formInput">
                             {inputs.map((input) => {

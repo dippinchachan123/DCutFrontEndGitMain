@@ -7,20 +7,36 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import { DarkModeContext } from "../../context/darkModeContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const Navbar = () => {
   const { dispatch } = useContext(DarkModeContext);
-
+  const [inputText,setInputText] = useState("");
+  
+  function handleChange(e){
+      const value = e.target.value;
+      setInputText(value)
+  }
+  
+  function handleSearch(){
+      console.log(inputText)
+  }
   return (
     <div className="navbar">
       <div className="wrapper">
         <div className="search">
-          <input type="text" placeholder="Search..." />
-          <SearchOutlinedIcon />
+          <input 
+            type="text" 
+            placeholder="Search..."  
+            onChange={handleChange}
+          />
+          <span onClick={handleSearch}>
+            <SearchOutlinedIcon />
+          </span>
+          
         </div>
         <div className="items">
-          <div className="item">
+          {/* <div className="item">
             <LanguageOutlinedIcon className="icon" />
             English
           </div>
@@ -43,7 +59,7 @@ const Navbar = () => {
           </div>
           <div className="item">
             <ListOutlinedIcon className="icon" />
-          </div>
+          </div> */}
           <div className="item">
             <img
               src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"

@@ -288,10 +288,32 @@ const Datatable = ({ ids,postProcess }) => {
           },
           {
             field: "color",
-            headerName: "Color",
-            width: 100,
+            headerName: "Color1/Pcs",
+            width: 150,
             renderCell: (params) => {
-              return params.row.color?.value;
+              return params.row.color?
+              <span>{params.row.color?.value} / {params.row.colorPieces1}</span>:
+              'Not Available';
+            }
+          },
+          {
+            field: "color2",
+            headerName: "Color2/Pcs",
+            width: 150,
+            renderCell: (params) => {
+              return params.row.color2?
+              <span>{params.row.color2?.value} / {params.row.colorPieces2}</span>:
+              'Not Available';
+            }
+          },
+          {
+            field: "color3",
+            headerName: "Color3/Pcs",
+            width: 150,
+            renderCell: (params) => {
+              return params.row.color3?
+              <span>{params.row.color3?.value} / {params.row.colorPieces3}</span>:
+              'Not Available';
             }
           },
           {
@@ -317,12 +339,14 @@ const Datatable = ({ ids,postProcess }) => {
           },
           {
             field: "color",
-            headerName: "Color",
-            width: 100,
+            headerName: "Color/Pcs",
+            width: 150,
             renderCell: (params) => {
-              return params.row.color?.value;
+              return params.row.color?
+              <span>{params.row.color?.value} / {params.row.colorPieces1}</span>:
+              'Not Available';
             }
-          }
+          },
         ]
         break;
       case PRE_PROCESS_TYPES.GHAT_LOTING:

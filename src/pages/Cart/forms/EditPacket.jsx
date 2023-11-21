@@ -13,8 +13,9 @@ import ArrowDropDownCircleSharpIcon from '@mui/icons-material/ArrowDropDownCircl
 import { Select, MenuItem, Button,TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Fields } from "../../../apis/api.fields";
-import { PRE_PROCESS_TYPES } from "../../../enums/processes";
+import { PRE_PROCESS_TYPES, weights } from "../../../enums/processes";
 import {  useUser } from "../../../context/kapanContext";
+import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 
 
 const Edit  = ({postProcess}) => {
@@ -35,6 +36,8 @@ const Edit  = ({postProcess}) => {
     }
 
     const [user,setUser] = useUser();
+    const [OriginalData,setOriginalData] = useState({})
+
     
 
     const [charni, setCharni] = useState([]);
@@ -85,6 +88,11 @@ const Edit  = ({postProcess}) => {
     ];
 
     const handleSubmit = (e)=>{
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
         Cart.editPacket(kapanId,cutId,process,id,data,postProcess)
         .then(res => {
             if(res.err || !res.data){
@@ -98,6 +106,43 @@ const Edit  = ({postProcess}) => {
         .catch(err => {
             notificationPopup(errors.SAVE_ERROR,"error")
         })
+    }
+
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(!data.weight){
+            return {status : false,msg : "Invalid Weight!!"}
+        }
+        if(!data.pieces){
+            return {status : false,msg : "Invalid Pieces!!"}
+        }
+        
+        if(!postProcess && [pc.POLISH_LOTING,pc.POLISH_TABLE_LOTING,pc.GHAT_LOTING].includes(process) && !data.charni){
+            return {status : false,msg : "Invalid charni!!"}
+        }
+        if(!postProcess && [pc.POLISH_LOTING].includes(process)){
+            if(!data.cutting){
+                return {status : false,msg : "Invalid cutting!!"}}
+
+            if(!data.color && !data.color2 && !data.color3){
+                return {status : false,msg : "Invalid color!!"}}
+            
+            if(parseFloat(data.colorPieces1) + parseFloat(data.colorPieces2 || 0) + parseFloat(data.colorPieces3 || 0) != parseFloat(data.pieces)){
+                return {status : false,msg : "Color Pieces is not equals to pieces!!"}}
+        }
+        if(!postProcess && [pc.POLISH_TABLE_LOTING].includes(process)){
+            if(!data.color){
+                return {status : false,msg : "Invalid color!!"}}
+            
+            if(parseFloat(data.colorPieces1 || 0) != parseFloat(data.pieces)){
+                return {status : false,msg : "Color Pieces is not equals to pieces!!"}}
+        }
+
+        if(data.weight - OriginalData.subPacketsDetails?.totalWeightIn < 0){
+            return {status : false,msg : `Weight Limit deficit by ${-(data.weight - OriginalData.subPacketsDetails?.totalWeightIn)}!!`}
+        }
+        
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e)=>{
@@ -208,11 +253,15 @@ const Edit  = ({postProcess}) => {
             if(res.err){
                 notificationPopup(res.msg,"error")
             }
+
             else{
-                setData(res.data[0].packet[0])
+                setData(res.data[0].packets[0])
+                setOriginalData(res.data[0].packets[0])
             }
+
         })
         .catch(err => {
+            console.log(err)
             notificationPopup(errors.SAVE_ERROR,"error")
         })
     },[])
@@ -229,6 +278,8 @@ const Edit  = ({postProcess}) => {
             <div className="top">
                 <h1>{title}</h1>
             </div>
+            <DataTableInfoBox infoData={[{label : "Weight left", value : (data.weight - OriginalData.subPacketsDetails?.totalWeightIn)}]}
+            style={{margin : '20px'}}/>
             <div className="bottom">  
             <div className="right">
                 <form className="formInput">
@@ -309,14 +360,10 @@ const Edit  = ({postProcess}) => {
                             value={data ? data["color"] : ""}
                             name={"color"}
                             onChange={handleChange}
-                            renderValue={(selected) => (
-                                // Custom rendering for the selected value
-                                <div>{selected?.value}</div>
-                              )}                     
-                            >
+                        >
                             {color.map((option, index) => (
                                 <MenuItem key={index} value={option}>
-                                    <div style={{ display: "flex", flexDirection: "row", columnGap: '180px', alignItems: 'center' }}>
+                                    <div style={{ display: "flex", flexDirection: "row", width : '300px',justifyContent : 'space-between', alignItems: 'center' }}>
                                         <div>{option.value}</div>
                                         <Button variant="sideButton" style={{ margin: 0, height: '30px' }} onClick={(e) => removeOptionsInSelect(e, "color", color, setColor, option.id)} >
                                             <CloseIcon sx={{ fontSize: '40px', alignSelf: 'center' }} />
@@ -325,6 +372,14 @@ const Edit  = ({postProcess}) => {
                                 </MenuItem>
                             ))}
                         </Select>
+                        <input
+                                type={"number"}
+                                value={data ? data["colorPieces1"] : ""}
+                                name={"colorPieces1"}
+                                onChange={handleChange}
+                                placeholder={"Pieces"}
+                                style={{alignSelf : "center",marginRight : '10px',width  : '58px','height' : '44px',border: '1px solid #c1c1c1'}}
+                        />
                         <Button variant="contained" style={{ margin: 0, height: '60px' }} onClick={()=>toggleAddOptions("color")}>
                             <ArrowDropDownCircleSharpIcon sx={{ fontSize: '30px', alignSelf: 'center' , transform: `rotate(${addOptionVisibility.color.active?180:0}deg)` }} />
                         </Button>
@@ -336,6 +391,103 @@ const Edit  = ({postProcess}) => {
                         name= "color"
                         onChange={handleChangeAddNewField}
                         />
+
+                        <Button variant="contained" style={{ margin : 0,marginLeft : '7px', height: '32px',width : '20px' }} onClick={(e) => addOptionsInSelect(e, "color", color, setColor)}>
+                            <AddIcon sx={{ fontSize: '20px', alignSelf: 'center' }} />
+                        </Button>
+                    </div>    
+                    }
+
+                </div>}
+
+                {!postProcess && [pc.POLISH_LOTING].includes(process) 
+                && <div className="formInput" key={"Color2"}>
+                    <label htmlFor="selectBox">Color 2</label>
+                    <div className='selectBoxContainer'>
+                        <Select className="SelectBox"
+                            value={data ? data["color2"] : ""}
+                            name={"color2"}
+                            onChange={handleChange}
+                        >
+                            {color.map((option, index) => (
+                                <MenuItem key={index} value={option}>
+                                    <div style={{ display: "flex", flexDirection: "row", width : '300px',justifyContent : 'space-between', alignItems: 'center' }}>
+                                        <div>{option.value}</div>
+                                        <Button variant="sideButton" style={{ margin: 0, height: '30px' }} onClick={(e) => removeOptionsInSelect(e, "color", color, setColor, option.id)} >
+                                            <CloseIcon sx={{ fontSize: '40px', alignSelf: 'center' }} />
+                                        </Button>
+                                    </div>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <input
+                                type={"number"}
+                                value={data ? data["colorPieces2"] : ""}
+                                name={"colorPieces2"}
+                                onChange={handleChange}
+                                placeholder={"Pieces"}
+                                style={{alignSelf : "center",marginRight : '10px',width  : '58px','height' : '44px',border: '1px solid #c1c1c1'}}
+                        />
+                        <Button variant="contained" style={{ margin: 0, height: '60px' }} onClick={()=>toggleAddOptions("color")}>
+                            <ArrowDropDownCircleSharpIcon sx={{ fontSize: '30px', alignSelf: 'center' , transform: `rotate(${addOptionVisibility.color.active?180:0}deg)` }} />
+                        </Button>
+                    </div>
+                    {addOptionVisibility.color.active && 
+                        <div style={{display  : "flex",justifyContent : 'left',alignItems : 'center',marginTop : '5px'}}>
+                        <TextField 
+                        variant="filled" 
+                        name= "color"
+                        onChange={handleChangeAddNewField}
+                        />
+
+                        <Button variant="contained" style={{ margin : 0,marginLeft : '7px', height: '32px',width : '20px' }} onClick={(e) => addOptionsInSelect(e, "color", color, setColor)}>
+                            <AddIcon sx={{ fontSize: '20px', alignSelf: 'center' }} />
+                        </Button>
+                    </div>    
+                    }
+
+                </div>}
+
+                {!postProcess && [pc.POLISH_LOTING].includes(process) 
+                && <div className="formInput" key={"Color3"}>
+                    <label htmlFor="selectBox">Color 3</label>
+                    <div className='selectBoxContainer'>
+                        <Select className="SelectBox"
+                            value={data ? data["color3"] : ""}
+                            name={"color3"}
+                            onChange={handleChange}
+                        >
+                            {color.map((option, index) => (
+                                <MenuItem key={index} value={option}>
+                                    <div style={{ display: "flex", flexDirection: "row", width : '300px',justifyContent : 'space-between', alignItems: 'center' }}>
+                                        <div>{option.value}</div>
+                                        <Button variant="sideButton" style={{ margin: 0, height: '30px' }} onClick={(e) => removeOptionsInSelect(e, "color", color, setColor, option.id)} >
+                                            <CloseIcon sx={{ fontSize: '40px', alignSelf: 'center' }} />
+                                        </Button>
+                                    </div>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <input
+                                type={"number"}
+                                value={data ? data["colorPieces3"] : ""}
+                                name={"colorPieces3"}
+                                onChange={handleChange}
+                                placeholder={"Pieces"}
+                                style={{alignSelf : "center",marginRight : '10px',width  : '58px','height' : '44px',border: '1px solid #c1c1c1'}}
+                        />
+                        <Button variant="contained" style={{ margin: 0, height: '60px' }} onClick={()=>toggleAddOptions("color")}>
+                            <ArrowDropDownCircleSharpIcon sx={{ fontSize: '30px', alignSelf: 'center' , transform: `rotate(${addOptionVisibility.color.active?180:0}deg)` }} />
+                        </Button>
+                    </div>
+                    {addOptionVisibility.color.active && 
+                        <div style={{display  : "flex",justifyContent : 'left',alignItems : 'center',marginTop : '5px'}}>
+                        <TextField 
+                        variant="filled" 
+                        name= "color"
+                        onChange={handleChangeAddNewField}
+                        />
+
                         <Button variant="contained" style={{ margin : 0,marginLeft : '7px', height: '32px',width : '20px' }} onClick={(e) => addOptionsInSelect(e, "color", color, setColor)}>
                             <AddIcon sx={{ fontSize: '20px', alignSelf: 'center' }} />
                         </Button>
@@ -379,7 +531,6 @@ const Edit  = ({postProcess}) => {
                             </Button>
                         </div>    
                     }
-
                 </div>}
                 </form>
                 <button className="button" onClick={handleSubmit}>Send</button>
@@ -387,8 +538,7 @@ const Edit  = ({postProcess}) => {
             </div>
         </div>
         </div>
-        
     );
-};
+}
 
 export default Edit;

@@ -9,6 +9,7 @@ import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import { Cart } from "../../../apis/api.cart";
 import {  useUser } from "../../../context/kapanContext";
+import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 
 
 const Edit = () => {
@@ -24,6 +25,9 @@ const Edit = () => {
         }
     });
     const [user,setUser] = useUser();
+
+    const [packetIn,setPacketIn] = useState({});
+    const [OriginalData,setOriginalData] = useState({})
     
 
     const navigate = useNavigate();
@@ -63,6 +67,11 @@ const Edit = () => {
     ];
 
     const handleSubmit = (e) => {
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
         Cart.editSPacket(kapanId, cutId, process, packetId, id, data)
             .then(res => {
                 if (res.err || !res.data) {
@@ -76,6 +85,24 @@ const Edit = () => {
             .catch(err => {
                 notificationPopup(errors.SAVE_ERROR, "error")
             })
+    }
+
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(!data.weight){
+            return {status : false,msg : "Invalid Weight!!"}
+        }
+        if(!data.pieces){
+            return {status : false,msg : "Invalid Pieces!!"}
+        }
+        if(!data.mmvalue){
+            return {status : false,msg : "Invalid MM Value!!"}
+        }
+        if(packetIn.weight - packetIn.subPacketsDetails.totalWeightIn - data.weight + OriginalData.weight < 0){
+            return {status : false,msg : `Weight Limit Excedded by ${-(packetIn.weight - packetIn.subPacketsDetails.totalWeightIn - data.weight + OriginalData.weight)}!!`}
+        }
+        
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e) => {
@@ -103,13 +130,31 @@ const Edit = () => {
                     notificationPopup(res.msg, "error")
                 }
                 else {
+                    console.log("Data : ",res.data[0].subPacket[0])
                     setData(res.data[0].subPacket[0])
+                    setOriginalData(res.data[0].subPacket[0])
                 }
             })
             .catch(err => {
                 notificationPopup(errors.SAVE_ERROR, "error")
             })
     }, [])
+
+    useEffect(()=>{
+        Cart.getPacket(kapanId,cutId,process,packetId)
+        .then(res => {
+            if(!res.err){
+                setPacketIn(res.data[0].packets[0])
+            }
+            else{
+               throw new Error("Error in loading kapan Weight!!")
+            }
+        })
+        .catch(err => {
+            
+            notificationPopup("Error in loading kapan Weight!!","error")
+        })
+    },[])
 
     return (
         <div className="new">
@@ -119,27 +164,9 @@ const Edit = () => {
                 <div className="top">
                     <h1>{title}</h1>
                 </div>
+                <DataTableInfoBox infoData={[{label : "Main Packet Weight left", value : (packetIn.weight || 0)- (packetIn.subPacketsDetails?.totalWeightIn || 0) - (data.weight || 0) + (OriginalData.weight || 0)}]}
+                style={{margin : '20px'}}/>
                 <div className="bottom">
-                    <div className="left">
-                        <label htmlFor="file">
-                            <img
-                                src={
-                                    data?.img
-                                        ? URL.createObjectURL(data?.img)
-                                        : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-                                }
-                                alt=""
-                            />
-                            {/* <DriveFolderUploadOutlinedIcon className="icon" /> */}
-                            <input className="imageInput"
-                                name="img"
-                                type="file"
-                                id="file"
-                                onChange={handleChange}
-                                style={{ display: "none" }}
-                            />
-                        </label>
-                    </div>
 
                     <div className="right">
                         <form className="formInput">

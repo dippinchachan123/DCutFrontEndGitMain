@@ -161,7 +161,7 @@ const Datatable = ({ ids }) => {
       },
     },
     {
-      field: "MMValue",
+      field: "mmvalue",
       headerName: "MM Value",
       width: 100
 

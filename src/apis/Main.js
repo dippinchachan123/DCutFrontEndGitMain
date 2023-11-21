@@ -7,7 +7,7 @@ export class Main {
 
     static authenticate(){
         if(!Main.getCurrentUser()){
-            window.location.href = '/login'
+            window.location.href = '/'
             return true
         }
         return false
@@ -17,10 +17,14 @@ export class Main {
     }
 
     static isAdmin(user){
-       return user?user.role == "Admin":Main.getCurrentUser() && Main.getCurrentUser().role == "Admin"
+        user = user || this.getCurrentUser()
+
+        return user?user.role == "Admin":Main.getCurrentUser() && Main.getCurrentUser().role == "Admin"
     }
 
     static isStaff(user){
+        user = user || this.getCurrentUser()
+
         return user?user.role == "Staff":Main.getCurrentUser() && Main.getCurrentUser().role == "Staff"
 
     }
@@ -28,6 +32,26 @@ export class Main {
     static isSuperAdmin(user){
         return user?user.role == "Super-Admin":Main.getCurrentUser() && Main.getCurrentUser().role == "Super-Admin"
 
+    }
+
+    static isPreProcess(user){
+        user = user || this.getCurrentUser()
+        console.log(user)
+
+        if(user.role == "Staff"){
+            return user.staff.type == "Pre-Process"
+        }
+        return false
+    }
+    static isPostProcess(user){
+        user = user || this.getCurrentUser()
+        console.log(user)
+
+        if(user.role == "Staff"){
+            return user.staff.type == "Post-Process"
+        }
+        
+        return false
     }
 
     static extractPath(data, path) {
