@@ -67,6 +67,15 @@ const New = ({postProcess}) => {
             type: "text",
         },
     ];
+
+    if(process == PRE_PROCESS_TYPES.POLISH_LOTING){
+        inputs.push({
+            id: 6,
+            label: "PurityNo",
+            type: "text",
+        })
+    }
+
     function validate(data){
         console.log("Validating Data : ",data)
         if(!data.weight){
@@ -86,8 +95,13 @@ const New = ({postProcess}) => {
             if(!data.color && !data.color2 && !data.color3){
                 return {status : false,msg : "Invalid color!!"}}
             
+            if(!data.purityno){
+                return {status : false,msg : "Invalid Purity No. !!"}}
+            
             if(parseFloat(data.colorPieces1) + parseFloat(data.colorPieces2 || 0) + parseFloat(data.colorPieces3 || 0) != parseFloat(data.pieces)){
                 return {status : false,msg : "Color Pieces is not equals to pieces!!"}}
+
+                
         }
         if(!postProcess && [pc.POLISH_TABLE_LOTING].includes(process)){
             if(!data.color){

@@ -12,7 +12,10 @@ import { errors, success } from "../../../enums/messages";
 import IssueForm from "../../Forms/issuePacketForm";
 import IssuedPacketForm from "../../Forms/issuePacketOpen";
 import BoilReturnForm from "../../Forms/returnWeightSubPacket";
-import { generatePDF } from "../../PDFs/printPackets";
+import { generatePdf } from "../../../components/PDFs/issuePacketsPdf";
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
+
 
 const Datatable = ({ ids,postProcess }) => {
   const [data, setData] = useState([]);
@@ -127,6 +130,13 @@ const Datatable = ({ ids,postProcess }) => {
     toggleBoilForm();
   }
 
+  const downloadPdf = (data,to) => {
+    console.log("Hello boys!!",data,to)
+    const pdf = new jsPDF();
+    generatePdf(pdf,{data,to});
+    pdf.save(`issuePacketsTo${to}.pdf`);
+  };
+
   const handleSubmitIssueForm = (e, packets, dlt = false) => {
     packets.packets.length && packets.packets.forEach(packet => {
       Cart.editPacketField(kapanId, cutId, process, packet.id, "issue", { issue: packets.user },postProcess)
@@ -138,6 +148,7 @@ const Datatable = ({ ids,postProcess }) => {
           else {
             toggleISForm();
             setSelectedRowIds(new Set())
+            downloadPdf(packets.packets,packets.user)
           }
         })
       toggleISForm()
@@ -242,6 +253,11 @@ const Datatable = ({ ids,postProcess }) => {
     switch (process) {
       case PRE_PROCESS_TYPES.POLISH_LOTING:
         inBTWColumns = [
+          {
+            field: "purityno",
+            headerName: "Purity No.",
+            width: 100,
+          },
           {
             field: "boilWeight",
             headerName: "LaserWgt",
@@ -361,6 +377,7 @@ const Datatable = ({ ids,postProcess }) => {
           }
         ]
         break;
+      
       case PRE_PROCESS_TYPES.LASER_LOTING:
         inBTWColumns = [
           {
@@ -575,7 +592,7 @@ const Datatable = ({ ids,postProcess }) => {
       <div className="datatableTitle">
         Packets<h5>{(postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_", " ")}</h5>
         <div>
-        <button onClick={() => generatePDF({kapanId: kapanId, process  : process,cutId: cutId},selectedEntries(selectedRowIds))} className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
+        <button  className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
             Print
           </button>
           {process != PRE_PROCESS_TYPES.LASER_LOTING?<button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '25px' }}>

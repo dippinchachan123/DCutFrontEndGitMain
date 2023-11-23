@@ -87,6 +87,14 @@ const Edit  = ({postProcess}) => {
 
     ];
 
+    if(process == PRE_PROCESS_TYPES.POLISH_LOTING){
+        inputs.push({
+            id: 6,
+            label: "PurityNo",
+            type: "text",
+        })
+    }
+
     const handleSubmit = (e)=>{
         const val = validate(data);
         if(!val.status){
