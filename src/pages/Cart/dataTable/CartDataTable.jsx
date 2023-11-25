@@ -15,6 +15,8 @@ import BoilReturnForm from "../../Forms/returnWeightSubPacket";
 import { generatePdf } from "../../../components/PDFs/issuePacketsPdf";
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
+import { Kapan } from "../../../apis/api.kapan";
+import { config } from "../../../config";
 
 
 const Datatable = ({ ids,postProcess }) => {
@@ -25,6 +27,10 @@ const Datatable = ({ ids,postProcess }) => {
       return parseInt(ele)
     } return ele
   })
+
+  const [lock,setLock] = useState({status : true,byApi : false});
+
+  
   const [RTFormVisibility, setRTFormVisibility] = useState(false);
   const [BoilFormVisibility, setBoilFormVisibility] = useState(false);
 
@@ -201,6 +207,26 @@ const Datatable = ({ ids,postProcess }) => {
       })
   }, [ids, RTFormVisibility, IssueFormVisibility, IssuedPacketVisibility, BoilFormVisibility])
 
+  useEffect(()=>{
+    Kapan.getKapanByID(kapanId)
+    .then(res => {
+        console.log(res)
+        setLock({status : res.data[0].lock.status})
+        if(!res.data[0].lock.status){
+          console.log("Set Timer...")
+
+          const TimerID = setInterval(() => {
+              console.log("Locking....")
+              setLock({status : true})
+              clearInterval(TimerID)
+          },config.UnlockTime)
+        }
+    })
+    .catch(err => {
+      console.log("Error in fetching Lock Field of kapan : ",err)
+    })
+  },[])
+
   const userColumns1 = [
     { field: "id", headerName: "P No.", width: 70 },
     {
@@ -249,6 +275,7 @@ const Datatable = ({ ids,postProcess }) => {
   }]
 
   let inBTWColumns = []
+  
   if(!postProcess){
     switch (process) {
       case PRE_PROCESS_TYPES.POLISH_LOTING:
@@ -437,8 +464,6 @@ const Datatable = ({ ids,postProcess }) => {
     }
   }
   
-
-
   const userColumns2 = [{
     field: "returnPieces",
     headerName: "RPcs",
@@ -513,7 +538,7 @@ const Datatable = ({ ids,postProcess }) => {
   }
 
   const actionColumn = [
-    {
+    !(lock.status && process != PRE_PROCESS_TYPES.LASER_LOTING) && {
       field: "action",
       headerName: "Action",
       width: 200,
@@ -527,19 +552,19 @@ const Datatable = ({ ids,postProcess }) => {
               View
             </div> : ""}
 
-            <div
+            {!lock.status && <div
               className="editButton"
               onClick={() => handleEdit(params.row.id)}
             >
               Edit
-            </div>
+            </div>}
 
-            <div
+            {!lock.status && <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
             >
               Delete
-            </div>
+            </div>}
           </div>
         );
       },
@@ -579,6 +604,8 @@ const Datatable = ({ ids,postProcess }) => {
       }
     },
   ];
+
+  
 
 
   const userColumns = userColumns1.concat(inBTWColumns).concat(userColumns2).concat(actionColumn)
@@ -655,5 +682,6 @@ const Datatable = ({ ids,postProcess }) => {
     </div>
   );
 };
+
 
 export default Datatable;

@@ -98,7 +98,7 @@ const Datatable = ({postProcess}) => {
     <div className="datatable">
       <div className="datatableTitle">
         {postProcess?"Post Process":"Cuts"}
-        {!Main.isStaff(user) && <Link to={`/${postProcess?"PP":""}Cuts/new/${kapanId}`} className="link">
+        {<Link to={`/${postProcess?"PP":""}Cuts/new/${kapanId}`} className="link">
           Add New
         </Link>}
       </div>

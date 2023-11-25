@@ -3,9 +3,11 @@ import styles from './transferWeight.module.scss';
 import { POST_PROCESS_TYPES, POST_PROCESS_TYPES_Keys, PRE_PROCESS_TYPES } from '../../enums/processes';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Main } from '../../apis/Main';
+import { useUser } from '../../context/kapanContext';
 
 const TWForm = ({ source ,onClose ,onSubmit,postProcess}) => {
   console.log("PostPP : ",postProcess)
+  const [user] = useUser();
   const [data, setData] = useState({
     source : source,
     sink : PRE_PROCESS_TYPES.POLISHED,
@@ -28,7 +30,7 @@ const TWForm = ({ source ,onClose ,onSubmit,postProcess}) => {
 
  
 
-  return !Main.isStaff() && (
+  return !Main.isStaff(user) && !Main.isAdmin(user) && (
     <div className={styles['gamified-form']}>
       <div className={styles['form-header']}>
         <span className={styles['close-button']} onClick={onClose}>

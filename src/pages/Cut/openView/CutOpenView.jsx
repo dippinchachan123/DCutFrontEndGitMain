@@ -12,6 +12,7 @@ import { Cart } from "../../../apis/api.cart";
 import notificationPopup from "../../../helpers/notifications";
 import { errors } from "../../../enums/messages";
 import {  useUser } from "../../../context/kapanContext";
+import { Main } from "../../../apis/Main";
 
 
 const Single = ({postProcess}) => {
@@ -25,10 +26,10 @@ const Single = ({postProcess}) => {
 
   const [user,setUser] = useUser();
   
-
   const [loadCarts, setLoadCarts] = useState(false);
 
   const toggleForm = (e, source) => {
+    (!Main.isStaff(user) && !Main.isAdmin(user) || showTWForm.visibility)&&  
     setTWFormState({ visibility: !showTWForm.visibility, source: source });
   }
 

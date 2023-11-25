@@ -114,6 +114,32 @@ export class Kapan extends Main {
         }
     }
 
+    static editKapanFieldByID = async (id, field,body) => {
+        if(Main.authenticate()){
+            return
+        }
+        const api = `${Main.DomainName}/api/updateKapanByField?id=${id}&field=${field}`
+        try {
+            const res = await axios.post(api, body);
+            const res_1 = res.data;
+            return res_1.err || res_1.notFound ? {
+                err: true,
+                data: res_1.data,
+                msg: !res_1.notFound ? errors.UPDATE_ERROR : errors.NOTFOUND
+            } : {
+                err: false,
+                data: res_1.data,
+                msg: success.UPDATE_SUCCESS
+            };
+        } catch (err) {
+            return {
+                err: true,
+                data: err,
+                msg: errors.UPDATE_ERROR
+            };
+        }
+    }
+
     static deleteKapanByID = async (id) => {
         if(Main.authenticate()){
             return

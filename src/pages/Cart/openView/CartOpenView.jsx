@@ -10,7 +10,6 @@ const Single = ({postProcess}) => {
   const {id} = useParams()
   const [user,setUser] = useUser();
   
-  
   return (
     <div className="single">
       <Sidebar />
