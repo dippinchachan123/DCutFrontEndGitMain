@@ -64,6 +64,7 @@ export class Cart extends Main{
         if(Main.authenticate()){
             return
         }
+        
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addPacket?id=${id}&kapanId=${kapanId}&process=${process}`
         try {
             const res = await axios.post(api, body)
@@ -89,6 +90,22 @@ export class Cart extends Main{
     static deletePacket = async (kapanId,cutId,process,id,postProcess = false) => {
         if(Main.authenticate()){
             return
+        }
+        const kapan = await Kapan.getKapanByID(id);
+        if(!kapan.err){
+            if(kapan.data[0].lock.status){
+                return {
+                    err: true,
+                    data: kapan.data,
+                    msg: "Kapan is Locked!!"
+                }
+            }
+        }else{
+            return {
+                err: false,
+                data: kapan,
+                msg: success.DELETION_SUCCESS
+            }
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deletePacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`
         try {
@@ -116,6 +133,22 @@ export class Cart extends Main{
         if(Main.authenticate()){
             return
         }
+        const kapan = await Kapan.getKapanByID(id);
+        if(!kapan.err){
+            if(kapan.data[0].lock.status){
+                return {
+                    err: true,
+                    data: kapan.data,
+                    msg: "Kapan is Locked!!"
+                }
+            }
+        }else{
+            return {
+                err: false,
+                data: kapan,
+                msg: success.DELETION_SUCCESS
+            }
+        }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updatePacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`
         try {
             const res = await axios.post(api,data);
@@ -142,6 +175,23 @@ export class Cart extends Main{
         if(Main.authenticate()){
             return
         }
+        const kapan = await Kapan.getKapanByID(id);
+        if(!kapan.err){
+            if(kapan.data[0].lock.status){
+                return {
+                    err: true,
+                    data: kapan.data,
+                    msg: "Kapan is Locked!!"
+                }
+            }
+        }else{
+            return {
+                err: false,
+                data: kapan,
+                msg: success.DELETION_SUCCESS
+            }
+        }
+        
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updatePacketField?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&field=${field}`
         try {
             const res = await axios.post(api,data);
