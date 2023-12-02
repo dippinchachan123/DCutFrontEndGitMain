@@ -90,7 +90,7 @@ const Edit  = ({postProcess}) => {
         if(!data.pieces){
             return {status : false,msg : "Invalid Pieces!!"}
         }
-        if(kapanIn.weight - kapanIn.cutsWeight - data.weight + OriginalData.weight < 0){
+        if(!postProcess && kapanIn.weight - kapanIn.cutsWeight - data.weight + OriginalData.weight < 0){
             return {status : false,msg : `Weight Limit Excedded by ${-(kapanIn.weight - kapanIn.cutsWeight - data.weight + + OriginalData.weight)}!!`}
         }
         
@@ -156,8 +156,8 @@ const Edit  = ({postProcess}) => {
             <div className="top">
                 <h1>{title}</h1>
             </div>
-            <DataTableInfoBox infoData={[{label : "Kapan Weight left", value : (kapanIn.weight || 0)- (kapanIn.cutsWeight || 0) - (data.weight || 0) + (OriginalData.weight || 0)}]}
-            style={{margin : '20px'}}/>
+            {!postProcess &&<DataTableInfoBox infoData={[{label : "Kapan Weight left", value : (kapanIn.weight || 0)- (kapanIn.cutsWeight || 0) - (data.weight || 0) + (OriginalData.weight || 0)}]}
+            style={{margin : '20px'}}/>}
             <div className="bottom">  
 
             <div className="right">

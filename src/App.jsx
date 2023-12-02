@@ -5,6 +5,7 @@ import { DarkModeContext } from "./context/darkModeContext";
 import React from 'react';
 import { GlobalRoute } from "./routes/commonRoutes";
 import { UserProvider } from "./context/kapanContext";
+import MyPdfComponent from "./components/PDFs/PdfComponent";
 
 
 function App() {
@@ -12,9 +13,11 @@ function App() {
   console.log("Hello World!!")
   return (
     <div className={darkMode ? "app dark" : "app"}>
+      {/* <MyPdfComponent /> */}
+
       <BrowserRouter>
         <UserProvider>
-            <GlobalRoute />
+          <GlobalRoute />
         </UserProvider>
       </BrowserRouter>
     </div>

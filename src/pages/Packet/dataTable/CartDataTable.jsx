@@ -12,10 +12,17 @@ import { errors, success } from "../../../enums/messages";
 import IssueForm from "../../Forms/issuePacketForm";
 import IssuedPacketForm from "../../Forms/issuePacketOpen";
 import SubReturnForm from "../../Forms/returnWeightSubPacket";
+import jsPDF from "jspdf";
+import { generateIssuePdf } from "../../../components/PDFs/issuePacketsPdf";
+import { config } from "../../../config";
+import { generatePrintPdf } from "../../../components/PDFs/printPackets";
+import { Main } from "../../../apis/Main";
+import { useUser } from "../../../context/kapanContext";
 
 
 const Datatable = ({ ids }) => {
   const [data, setData] = useState([]);
+  const [user] = useUser()
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
   const [kapanId, cutId, process, packetId] = ids.split("-").map(ele => {
     if (!isNaN(ele)) {
@@ -58,6 +65,13 @@ const Datatable = ({ ids }) => {
       })
   };
 
+  const downloadPdf = async (data,to) => {
+    const pdf = new jsPDF();
+    const processName = process.replaceAll("_"," ")
+    await generateIssuePdf(pdf,{data,to,kapanId,cutId,process : processName});
+    pdf.save(`issuePacketsTo${to.split('-')[1]}.pdf`);
+  };
+
   const handleSubmitIssueForm = (e, packets, dlt = false) => {
     packets.packets.length && packets.packets.forEach(packet => {
       Cart.editSPacketField(kapanId, cutId, process, packetId, packet.id, "issue", { issue: packets.user })
@@ -67,12 +81,24 @@ const Datatable = ({ ids }) => {
             console.log("Error", res.err)
           }
           else {
-            toggleISForm();
             setSelectedRowIds(new Set())
           }
         })
-      toggleISForm()
     })
+    toggleISForm()
+    downloadPdf(packets.packets,packets.user)
+  }
+
+  async function printPackets(data){
+    const pdf = new jsPDF('l', 'mm', [400, 200]);
+    pdf.setFont("Calibri", "bold");
+    pdf.setFontSize(14);
+    pdf.setTextColor(14, 3, 64);    
+    const processName = process.replaceAll("_"," ")
+
+    await generatePrintPdf(pdf,{data,kapanId,cutId,processName,url : `${config.FRONTEND_DOMAIN}/${"Packet"}/${kapanId}-${cutId}-${process}-${packetId}`});
+    pdf.save(`printPackets.pdf`);
+    setSelectedRowIds(new Set())
   }
 
   const handleUnSubmitIssueForm = (e, id) => {
@@ -288,9 +314,12 @@ const Datatable = ({ ids }) => {
       <div className="datatableTitle">
         Sub Packets
         <div>
-          <button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '20px' }}>
+          {!Main.isStaff(user) && <button onClick={(e) => printPackets(selectedEntries(selectedRowIds))} className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
+            Print
+          </button>}
+          {!Main.isStaff(user) && <button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '20px' }}>
             Issue Packets
-          </button>
+          </button>}
           <button onClick={() => navigate(`/Packet/New/${ids}`)} className="link" style={{ alignSelf: 'right' }}>
             Add New
           </button>

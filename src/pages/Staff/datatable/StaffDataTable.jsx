@@ -111,12 +111,6 @@ const Datatable = () => {
         return (
           <div className="cellAction">
             <div
-              className="viewButton"
-              onClick={() => handleView(params.row.id)}
-            >
-              View
-            </div>
-            <div
               className="editButton"
               onClick={() => handleEdit(params.row.id)}
             >

@@ -40,12 +40,12 @@ const Sidebar = () => {
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-            {!Main.isStaff(user) && <Link to="/home" style={{ textDecoration: "none" }}>
+            {/* {!Main.isStaff(user) && <Link to="/home" style={{ textDecoration: "none" }}>
               <li>
                 <DashboardIcon className="icon" />
                 <span>Dashboard</span>    
               </li>
-            </Link>}
+            </Link>} */}
             {!(Main.isStaff(user) && Main.isPostProcess(user)) && <Link to="/kapans" style={{ textDecoration: "none" }}>
               <li>
                 <FactoryIcon className="icon" />

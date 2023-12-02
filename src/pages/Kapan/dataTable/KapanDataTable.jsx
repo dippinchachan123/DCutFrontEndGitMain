@@ -23,6 +23,13 @@ const Datatable = () => {
   const [user] = useUser();
   const [reload,setReload] = useState(0);
 
+
+  //Totals
+  let [totalState,setTotalState] = useState({
+    totalWeight : 0,
+    totalPieces : 0
+  })
+
   const handleDelete = (id) => {
     Kapan.deleteKapanByID(id)
       .then(res => {
@@ -77,6 +84,36 @@ const Datatable = () => {
       })
   };
 
+  const lockKapan = (id) => {
+    
+    Kapan.editKapanFieldByID(id,"lock",
+    {"lock" : 
+      {
+        status : true,
+        lockedBy : null
+      }
+    })
+      .then(res => {
+        if (res.err) {
+          console.log("error : ",res.data)
+          notificationPopup(res.msg, "error")
+        }
+        else {
+          setData(data.map(ele => {
+            if(ele.id == id){
+              ele.lock.status = false
+            }
+            return ele
+          }))
+        }
+      })
+      .catch(err => {
+        console.log("error : ",err)
+        notificationPopup(errors.UPDATE_ERROR, "error")
+      })
+  };
+  
+
   const handleView = (id) => {
     navigate(`/kapans/${id}`)
   };
@@ -85,12 +122,32 @@ const Datatable = () => {
     navigate(`/kapans/edit/${id}`)
   };
 
+  const iterateKapans = async (data)=>{
+    const newState = {
+      totalWeight : 0,
+      totalPieces : 0
+    }
+    console.log(data)
+    for(let i = 0;i < data.length;i++){
+        let ele = data[i]
+        console.log(ele)
+
+        if(!ele.lock.status){
+          lockKapan(ele.id)
+        }
+        newState.totalWeight += ele.weight;
+        newState.totalPieces += ele.pieces
+    }
+    setTotalState(newState)
+  }
+
  
   useEffect(() => {
     Kapan.getKapans()
       .then(res => {
         if (!res.err) {
           setData(res.data)
+          iterateKapans(res.data)
           notificationPopup(res.msg, "success")
         } else {
           notificationPopup(res.msg, "error")
@@ -160,7 +217,7 @@ const Datatable = () => {
           Add New
         </Link>}
       </div>
-      <DataTableInfoBox infoData={[{label : "Weight",value : 100},{label : "Pieces",value : 100}]}/>
+      <DataTableInfoBox infoData={[{label : "Weight",value : totalState.totalWeight},{label : "Pieces",value : totalState.totalPieces}]}/>
       <DataGrid
         className="datagrid"
         rows={getTableData(data)}

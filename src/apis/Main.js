@@ -7,7 +7,7 @@ export class Main {
 
     static authenticate(){
         if(!Main.getCurrentUser()){
-            window.location.href = '/'
+            window.location.href = '/login'
             return true
         }
         return false

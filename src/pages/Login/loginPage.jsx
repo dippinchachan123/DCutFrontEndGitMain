@@ -52,6 +52,7 @@ const Login = () => {
                     notificationPopup(res.msg,"error")
                 }
             }else{
+                console.log(res.data)
                 notificationPopup(errors.FETCHING_ERROR,"error")
             }
         })

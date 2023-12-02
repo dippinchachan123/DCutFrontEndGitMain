@@ -7,21 +7,25 @@ import { Cart } from "../../../apis/api.cart";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ReturnForm from "../../Forms/returnWeight";
-import { POST_PROCESS_TYPES, PRE_PROCESS_TYPES, returnWeights, returnWeightsPP } from "../../../enums/processes";
+import { POST_PROCESS_TYPES, POST_PROCESS_TYPES_Keys, PRE_PROCESS_TYPES, returnWeights, returnWeightsPP } from "../../../enums/processes";
 import { errors, success } from "../../../enums/messages";
 import IssueForm from "../../Forms/issuePacketForm";
 import IssuedPacketForm from "../../Forms/issuePacketOpen";
 import BoilReturnForm from "../../Forms/returnWeightSubPacket";
-import { generatePdf } from "../../../components/PDFs/issuePacketsPdf";
+import { generateIssuePdf } from "../../../components/PDFs/issuePacketsPdf";
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import { Kapan } from "../../../apis/api.kapan";
 import { config } from "../../../config";
+import { generatePrintPdf } from "../../../components/PDFs/printPackets";
+import { Main } from "../../../apis/Main";
+import { useUser } from "../../../context/kapanContext";
 
 
 const Datatable = ({ ids,postProcess }) => {
   const [data, setData] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
+  const [user] = useUser();
   const [kapanId, cutId, process] = ids.split("-").map(ele => {
     if (!isNaN(ele)) {
       return parseInt(ele)
@@ -136,11 +140,11 @@ const Datatable = ({ ids,postProcess }) => {
     toggleBoilForm();
   }
 
-  const downloadPdf = (data,to) => {
-    console.log("Hello boys!!",data,to)
+  const downloadPdf = async (data,to) => {
     const pdf = new jsPDF();
-    generatePdf(pdf,{data,to});
-    pdf.save(`issuePacketsTo${to}.pdf`);
+    const processName = (postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_"," ")
+    await generateIssuePdf(pdf,{data,to,kapanId,cutId,process : processName});
+    pdf.save(`issuePacketsTo${to.split('-')[1]}.pdf`);
   };
 
   const handleSubmitIssueForm = (e, packets, dlt = false) => {
@@ -148,17 +152,31 @@ const Datatable = ({ ids,postProcess }) => {
       Cart.editPacketField(kapanId, cutId, process, packet.id, "issue", { issue: packets.user },postProcess)
         .then(res => {
           if (res.err) {
-            // notificationPopup(errors.UPDATE_ERROR,"error")
-            console.log("Error", res.err)
+            notificationPopup(res.msg,"error")
+            console.log("Error", res)
           }
           else {
-            toggleISForm();
             setSelectedRowIds(new Set())
-            downloadPdf(packets.packets,packets.user)
           }
         })
-      toggleISForm()
     })
+    toggleISForm()
+    downloadPdf(packets.packets,packets.user)
+  }
+
+  async function printPackets(data){
+    const pdf = new jsPDF('l', 'mm', [400, 200]);
+    pdf.setFont("Calibri", "bold");
+    pdf.setFontSize(14);
+    pdf.setTextColor(14, 3, 64);    
+    const processName = (postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_"," ")
+    data = data.map((ele)=>{
+        ele.url = `${config.FRONTEND_DOMAIN}/${postProcess?"PPcart":"cart"}/${kapanId}-${cutId}-${process}`
+        return ele;
+    })
+    await generatePrintPdf(pdf,{data,kapanId,cutId,process : processName});
+    pdf.save(`printPackets.pdf`);
+    setSelectedRowIds(new Set())
   }
 
   const handleUnSubmitIssueForm = (e, id) => {
@@ -619,10 +637,10 @@ const Datatable = ({ ids,postProcess }) => {
       <div className="datatableTitle">
         Packets<h5>{(postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_", " ")}</h5>
         <div>
-        <button  className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
+          {!Main.isStaff(user) && <button onClick={(e) => printPackets(selectedEntries(selectedRowIds))} className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
             Print
-          </button>
-          {process != PRE_PROCESS_TYPES.LASER_LOTING?<button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '25px' }}>
+          </button>}
+          {process != PRE_PROCESS_TYPES.LASER_LOTING && !Main.isStaff(user)?<button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '25px' }}>
             Issue Packets
           </button>:""}
           <button onClick={() => navigate(`/${postProcess?"PP":""}Cart/New/${ids}`)} className="link" style={{ alignSelf: 'right' }}>
@@ -638,7 +656,7 @@ const Datatable = ({ ids,postProcess }) => {
             WeightLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Weight":"Weight" ,
             PiecesLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Pieces":"Pieces" ,
             packetID: rowDetails.packetId, 
-            id: rowDetails.id          }}
+            id: rowDetails.id }}
           weights={getWeightsForForm(postProcess?returnWeightsPP[process]:returnWeights[process])} 
           onClose={toggleRTForm} 
           onSubmission={handleSubmitRTForm} 
