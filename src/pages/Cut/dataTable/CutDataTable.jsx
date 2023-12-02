@@ -21,6 +21,25 @@ const Datatable = ({postProcess}) => {
   }
   const navigate = useNavigate();
 
+  let [totalState,setTotalState] = useState({
+    totalWeight : 0,
+    totalPieces : 0
+  })
+
+  const iterateCuts = async (data)=>{
+    const newState = {
+      totalWeight : 0,
+      totalPieces : 0
+    }
+    console.log(data)
+    for(let i = 0;i < data.length;i++){
+        let ele = data[i]
+        newState.totalWeight += ele.weight;
+        newState.totalPieces += ele.pieces
+    }
+    setTotalState(newState)
+  }
+
   const handleDelete = (id) => {
     Cut.deleteCutByID(kapanId,id,postProcess)
       .then(res => {
@@ -50,6 +69,7 @@ const Datatable = ({postProcess}) => {
       .then(res => {
         if (!res.err) {
           setData(res.data[0].cuts)
+          iterateCuts(res.data[0].cuts)
           notificationPopup(res.msg, "success")
         } else {
           notificationPopup(res.msg, "error")
@@ -102,7 +122,7 @@ const Datatable = ({postProcess}) => {
           Add New
         </Link>}
       </div>
-      <DataTableInfoBox infoData={[{label : "Weight",value : 100},{label : "Pieces",value : 100}]}/>
+      <DataTableInfoBox infoData={[{label : "Weight",value : totalState.totalWeight},{label : "Pieces",value : totalState.totalPieces}]}/>
       <DataGrid
         className="datagrid"
         rows={getTableData(data)}

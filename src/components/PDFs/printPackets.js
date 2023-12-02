@@ -47,19 +47,29 @@ export const  generatePrintPdf = async (pdf, {
       // Set up the table data
       const element = data[i]
 
+      function generateShortcut(name) {
+        // Assuming the name is in the format "Dippin Chachan"
+        const initials = name
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase())
+          .join('');
+      
+        // Use the initials as the shortcut
+        return initials;
+      }
+
 
       const rows = [
         ["S NO" ,	element.id],
         ["KP NO" , kapanId],
         ["CUT NO" ,	cutId],
-        ["PROCESS",process],
+        ["PROCESS",generateShortcut(process)],
         ["LS MM" ,	element.mmvalue || "NA"],
         ["PCS" ,	element.pieces],
         ["WGT" ,	element.weight],
         ["BI" ,	"NA"]
       ]
 
-      console.log(rows,kapanId,cutId,process)
 
 
       pdf.autoTable({

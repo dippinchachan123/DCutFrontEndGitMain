@@ -19,6 +19,7 @@ import { useContext } from "react";
 import { grey } from "@mui/material/colors";
 import { Main } from "../../apis/Main";
 import { useUser } from "../../context/kapanContext";
+import Logo from '../../LOGO.jpeg'
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
@@ -33,7 +34,8 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="top">
         <Link to="/home" style={{ textDecoration: "none" }}>
-          <span className="logo">SBG</span>
+          <img className={"Logo"} src={Logo} width= '255px' height={'100px'} style={{padding : "5px"}}/>
+          {/* <span className="logo">SBG</span> */}
         </Link>
       </div>
       <hr />

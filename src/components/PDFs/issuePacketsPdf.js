@@ -49,7 +49,18 @@ export const generateIssuePdf = async (pdf, {
     }
   }
 
-  const rows = data.map(item => [kapanId, cutId, item.id,process,item.cutting || "NA", item.pieces, item.weight, "                ", item.kaWgt || "NA", '']);
+  function generateShortcut(name) {
+    // Assuming the name is in the format "Dippin Chachan"
+    const initials = name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+  
+    // Use the initials as the shortcut
+    return initials;
+  }
+
+  const rows = data.map(item => [kapanId, cutId, item.id,generateShortcut(process),item.cutting || "NA", item.pieces, item.weight, "                ", item.kaWgt || "NA", '']);
   rows.push([
     "Total",
     "",
