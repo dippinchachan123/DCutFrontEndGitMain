@@ -33,19 +33,12 @@ const Datatable = ({ ids,postProcess }) => {
   })
 
   const [lock,setLock] = useState({status : true,byApi : false});
-
-  
   const [RTFormVisibility, setRTFormVisibility] = useState(false);
   const [BoilFormVisibility, setBoilFormVisibility] = useState(false);
-
   const [IssueFormVisibility, setIssueFormVisibility] = useState(false);
   const [IssuedPacketVisibility, setIssuedPacketVisibility] = useState(false);
-
-
   const [rowDetails, setRowDetails] = useState(null);
-
   const navigate = useNavigate();
-
 
   const handleDelete = (id) => {
     Cart.deletePacket(kapanId, cutId, process, id,postProcess)
@@ -109,6 +102,7 @@ const Datatable = ({ ids,postProcess }) => {
           Cart.editPacketField(kapanId, cutId, process, id, "loss", { loss: (!dlt) ? rowDetails.weight - formData.returnWeight : 0 },postProcess)
             .then(res => {
               if (res.err) {
+                console.log("Error :",res)
                 notificationPopup("Update Successfull!!(Return Weight not changed.)", "success")
               }
               else {
@@ -207,9 +201,7 @@ const Datatable = ({ ids,postProcess }) => {
     const res = Array.from(ids).length != 0 && Array.from(ids).map((rowId) => data.find((row) => row.id === rowId));
     return res
   }
-
-
-
+  
   useEffect(() => {
     Cart.getPackets(parseInt(kapanId), parseInt(cutId), process,postProcess)
       .then(res => {
@@ -535,28 +527,29 @@ const Datatable = ({ ids,postProcess }) => {
     }
   },
   ];
-
- 
+  
   function filterFields(columns){
       const p = PRE_PROCESS_TYPES
       if([p.ORIGINAL_RC,p.POLISHED,p.RC,p.REJECTION].includes(process)){
-          const newColumns =  columns.filter(ele => {
+          columns.filter(ele => {
             if(["returnPieces","returnWeight","loss","return","issued"].includes(ele.field)){
               return false
             }
             return true
           })
-          return newColumns.map(ele => {
-              ele.width += 60
+          console.log("c",columns)
+          return columns.map(ele => {
+              console.log("Dd",ele)
+              ele.width = (ele.width || 150) + 60
               return ele
           })
       }
       return columns
-      
   }
+  console.log(postProcess,lock,process)
 
   const actionColumn = [
-    !(lock.status && process != PRE_PROCESS_TYPES.LASER_LOTING) && {
+    ((postProcess && Main.lockForStaff(user,lock)) || (process != PRE_PROCESS_TYPES.LASER_LOTING && (Main.lockForStaff(user,lock))))? {} : {
       field: "action",
       headerName: "Action",
       width: 200,
@@ -570,14 +563,14 @@ const Datatable = ({ ids,postProcess }) => {
               View
             </div> : ""}
 
-            {!lock.status && <div
+            {!(Main.lockForStaff(user,lock)) && <div
               className="editButton"
               onClick={() => handleEdit(params.row.id)}
             >
               Edit
             </div>}
 
-            {!lock.status && <div
+            {!(Main.lockForStaff(user,lock)) && <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
             >
@@ -609,6 +602,7 @@ const Datatable = ({ ids,postProcess }) => {
         }
       }
     } : {},
+
     {
       field: "remarks",
       headerName: "Remarks",
@@ -622,9 +616,6 @@ const Datatable = ({ ids,postProcess }) => {
       }
     },
   ];
-
-  
-
 
   const userColumns = userColumns1.concat(inBTWColumns).concat(userColumns2).concat(actionColumn)
 
@@ -649,14 +640,17 @@ const Datatable = ({ ids,postProcess }) => {
         </div>
       </div>
       {RTFormVisibility &&
-        <ReturnForm headerDetails={
-          {
-            weight: process == PRE_PROCESS_TYPES.LASER_LOTING?rowDetails.boil?.weight || 0:rowDetails.weight, 
-            pieces: process == PRE_PROCESS_TYPES.LASER_LOTING?rowDetails.boil?.pieces || 0:rowDetails.pieces, 
-            WeightLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Weight":"Weight" ,
-            PiecesLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Pieces":"Pieces" ,
-            packetID: rowDetails.packetId, 
-            id: rowDetails.id }}
+        <ReturnForm 
+          headerDetails={
+            {
+              weight: process == PRE_PROCESS_TYPES.LASER_LOTING?rowDetails.boil?.weight || 0:rowDetails.weight, 
+              pieces: process == PRE_PROCESS_TYPES.LASER_LOTING?rowDetails.boil?.pieces || 0:rowDetails.pieces, 
+              WeightLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Weight":"Weight" ,
+              PiecesLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Pieces":"Pieces" ,
+              packetID: rowDetails.packetId, 
+              id: rowDetails.id 
+            }
+          }
           weights={getWeightsForForm(postProcess?returnWeightsPP[process]:returnWeights[process])} 
           onClose={toggleRTForm} 
           onSubmission={handleSubmitRTForm} 
@@ -700,6 +694,5 @@ const Datatable = ({ ids,postProcess }) => {
     </div>
   );
 };
-
 
 export default Datatable;

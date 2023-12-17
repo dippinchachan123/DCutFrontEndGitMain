@@ -47,7 +47,7 @@ const Login = () => {
                 if(res.data.valid){
                     notificationPopup(res.msg,"success")
                     setUser(res.data.data[0]);
-                    navigate(Main.isStaff(user)?(Main.isPostProcess(user)?'/PPkapans/1':'/kapans'):'/home')
+                    navigate(Main.isStaff(res.data.data[0])?(Main.isPostProcess(res.data.data[0])?'/PPkapans/1':'/kapans'):'/home')
                 }else{
                     notificationPopup(res.msg,"error")
                 }

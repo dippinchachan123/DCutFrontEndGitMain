@@ -462,6 +462,25 @@ export class Cart extends Main{
             return
         }
 
+        if(Main.isStaff()){
+            const kapan = await Kapan.getKapanByID(kapanId);
+            if(!kapan.err){
+                if(kapan.data[0].lock.status){
+                    return {
+                        err: true,
+                        data: kapan.data,
+                        msg: "Kapan is Locked!!"
+                    }
+                }
+            }else{
+                return {
+                    err: false,
+                    data: kapan,
+                    msg: success.DELETION_SUCCESS
+                }
+            }
+        }
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}weightTransfer?cutId=${id}&kapanId=${kapanId}`
         try {
             const res = await axios.post(api, body)
@@ -486,6 +505,25 @@ export class Cart extends Main{
     static returnMainPacket = async (kapanId,cutId,process,id,body,postProcess = false) => {
         if(Main.authenticate()){
             return
+        }
+
+        if(Main.isStaff()){
+            const kapan = await Kapan.getKapanByID(kapanId);
+            if(!kapan.err){
+                if(kapan.data[0].lock.status){
+                    return {
+                        err: true,
+                        data: kapan.data,
+                        msg: "Kapan is Locked!!"
+                    }
+                }
+            }else{
+                return {
+                    err: false,
+                    data: kapan,
+                    msg: success.DELETION_SUCCESS
+                }
+            }
         }
         
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}ReturnMainPacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`

@@ -21,13 +21,13 @@ const Datatable = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [user] = useUser();
-  const [reload,setReload] = useState(0);
+  const [reload, setReload] = useState(0);
 
 
   //Totals
-  let [totalState,setTotalState] = useState({
-    totalWeight : 0,
-    totalPieces : 0
+  let [totalState, setTotalState] = useState({
+    totalWeight: 0,
+    totalPieces: 0
   })
 
   const handleDelete = (id) => {
@@ -46,61 +46,65 @@ const Datatable = () => {
       })
   };
 
-  const handleLock = (id,lock) => {
-    if(Main.isStaff(user)){
+  const handleLock = (id, lock) => {
+    const lockStatus = lock.status;
+    if (Main.isStaff(user)) {
       return
     }
-    Kapan.editKapanFieldByID(id,"lock",
-    {"lock" : 
+    Kapan.editKapanFieldByID(id, "lock",
       {
-        status : !lock.status,
-        lockedBy : user
-      }
-    })
+        "lock":
+        {
+          status: !lock.status,
+          lockedBy: user
+        }
+      })
       .then(res => {
         if (res.err) {
-          console.log("error : ",res.data)
+          console.log("error : ", res.data)
           notificationPopup(res.msg, "error")
         }
         else {
-          notificationPopup(lock.status?"Kapan Unlocked!!":"Kapan Locked!!", "success")
+          notificationPopup(lock.status ? "Kapan Unlocked!!" : "Kapan Locked!!", "success")
           setData(data.map(ele => {
-            if(ele.id == id){
+            if (ele.id == id) {
               ele.lock.status = !ele.lock.status
             }
             return ele
           }))
-          if(lock){
-            const timerId = setInterval(()=>{
-                handleLock(id,!lock);
-                clearInterval(timerId)
-            },config.UnlockTime)
-          }
+          // Locking in frontEnd!!
+          // if (lockStatus) {
+          //   const timerId = setInterval(() => {
+          //     handleLock(id, !lock);
+          //     clearInterval(timerId)
+          //   }, config.UnlockTime)
+          // }
         }
       })
       .catch(err => {
-        console.log("error : ",err)
+        console.log("error : ", err)
         notificationPopup(errors.UPDATE_ERROR, "error")
       })
   };
 
   const lockKapan = (id) => {
-    
-    Kapan.editKapanFieldByID(id,"lock",
-    {"lock" : 
+
+    Kapan.editKapanFieldByID(id, "lock",
       {
-        status : true,
-        lockedBy : null
-      }
-    })
+        "lock":
+        {
+          status: true,
+          lockedBy: null
+        }
+      })
       .then(res => {
         if (res.err) {
-          console.log("error : ",res.data)
+          console.log("error : ", res.data)
           notificationPopup(res.msg, "error")
         }
         else {
           setData(data.map(ele => {
-            if(ele.id == id){
+            if (ele.id == id) {
               ele.lock.status = false
             }
             return ele
@@ -108,11 +112,11 @@ const Datatable = () => {
         }
       })
       .catch(err => {
-        console.log("error : ",err)
+        console.log("error : ", err)
         notificationPopup(errors.UPDATE_ERROR, "error")
       })
   };
-  
+
 
   const handleView = (id) => {
     navigate(`/kapans/${id}`)
@@ -122,26 +126,21 @@ const Datatable = () => {
     navigate(`/kapans/edit/${id}`)
   };
 
-  const iterateKapans = async (data)=>{
+  const iterateKapans = async (data) => {
     const newState = {
-      totalWeight : 0,
-      totalPieces : 0
+      totalWeight: 0,
+      totalPieces: 0
     }
     console.log(data)
-    for(let i = 0;i < data.length;i++){
-        let ele = data[i]
-        console.log(ele)
-
-        if(!ele.lock.status){
-          lockKapan(ele.id)
-        }
-        newState.totalWeight += ele.weight;
-        newState.totalPieces += ele.pieces
+    for (let i = 0; i < data.length; i++) {
+      let ele = data[i]
+      newState.totalWeight += ele.weight;
+      newState.totalPieces += ele.pieces
     }
     setTotalState(newState)
   }
 
- 
+
   useEffect(() => {
     Kapan.getKapans()
       .then(res => {
@@ -199,9 +198,9 @@ const Datatable = () => {
           <div className="cellAction">
             {<div
               className="deleteButton"
-              onClick={() => handleLock(params.row.id,params.row.lock)}
+              onClick={() => handleLock(params.row.id, params.row.lock)}
             >
-              {params.row.lock.status?<LockIcon />:<LockOpenIcon/>}
+              {params.row.lock.status ? <LockIcon /> : <LockOpenIcon />}
             </div>}
           </div>
         );
@@ -217,7 +216,7 @@ const Datatable = () => {
           Add New
         </Link>}
       </div>
-      <DataTableInfoBox infoData={[{label : "Weight",value : totalState.totalWeight},{label : "Pieces",value : totalState.totalPieces}]}/>
+      <DataTableInfoBox infoData={[{ label: "Weight", value: totalState.totalWeight }, { label: "Pieces", value: totalState.totalPieces }]} />
       <DataGrid
         className="datagrid"
         rows={getTableData(data)}

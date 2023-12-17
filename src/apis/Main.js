@@ -54,6 +54,10 @@ export class Main {
         return false
     }
 
+    static lockForStaff(user,lock){
+        return this.isStaff(user) && lock.status
+    }
+
     static extractPath(data, path) {
         
         let pathChain = path.split('.');
