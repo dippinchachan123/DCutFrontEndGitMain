@@ -4,46 +4,93 @@ import { config } from "../config";
 
 export class Main {
     static DomainName = config.BACKEND_DOMAIN
-    static authenticate(){
-        if(!Main.getCurrentUser()){
-            window.location.href = '/login'
+    static async authenticate(){
+        if(!await Main.getCurrentUser()){
+            window.location.href = '/'
             return true
         }
         return false
     }
     static async getCurrentUser() {
+        const usr = localStorage.getItem('user')
+        if(!usr){
+            return false
+        }
         return await JSON.parse(localStorage.getItem('user'));
     }
 
     static isAdmin(user){
-        user = user || this.getCurrentUser()
-        return user?user.role == "Admin":Main.getCurrentUser() && Main.getCurrentUser().role == "Admin"
+        if(!user){
+            return new Promise((resolve,reject)=>{
+                Main.getCurrentUser().
+                then(usr => {
+                    resolve(usr.role == "Admin")
+                })
+                .catch(err => {
+                    reject(err)
+                })
+            })
+        }
+        return user && user.role == "Admin"
     }
 
     static isStaff(user){
-        user = user || this.getCurrentUser()
-        return user?user.role == "Staff":Main.getCurrentUser() && Main.getCurrentUser().role == "Staff"
+        if(!user){
+            return new Promise((resolve,reject)=>{
+                Main.getCurrentUser().
+                then(usr => {
+                    resolve(usr.role == "Staff")
+                })
+                .catch(err => {
+                    reject(err)
+                })
+            })
+        }
+        return user && user.role == "Staff"
     }
 
     static isSuperAdmin(user){
-        return user?user.role == "Super-Admin":Main.getCurrentUser() && Main.getCurrentUser().role == "Super-Admin"
-
+        if(!user){
+            return new Promise((resolve,reject)=>{
+                Main.getCurrentUser().
+                then(usr => {
+                    resolve(usr.role == "Super-Admin")
+                })
+                .catch(err => {
+                    reject(err)
+                })
+            })
+        }
+        return user && user.role == "Super-Admin"
     }
 
     static isPreProcess(user){
-        user = user || this.getCurrentUser()
-        if(user.role == "Staff"){
-            return user.staff.type == "Pre-Process"
+        if(!user){
+            return new Promise((resolve,reject)=>{
+                Main.getCurrentUser().
+                then(usr => {
+                    resolve(usr.role == "Staff" && usr.staff.type == "Pre-Process")
+                })
+                .catch(err => {
+                    reject(err)
+                })
+            })
         }
-        return false
+        return user.role == "Staff" && user.staff.type == "Pre-Process"
     }
     static  isPostProcess(user){
-        user = user || this.getCurrentUser()
-        if(user.role == "Staff"){
-            return user.staff.type == "Post-Process"
+        if(!user){
+            return new Promise((resolve,reject)=>{
+                Main.getCurrentUser().
+                then(usr => {
+                    resolve(usr.role == "Staff" && usr.staff.type == "Post-Process")
+                })
+                .catch(err => {
+                    reject(err)
+                })
+            })
         }
-        
-        return false
+        return user.role == "Staff" && user.staff.type == "Post-Process"
     }
 
     static lockForStaff(user,lock){

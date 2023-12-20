@@ -9,7 +9,7 @@ export class Cart extends Main{
 
     //Packets
     static getPackets = async (kapanId,id,process,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getPackets?id=${id}&kapanId=${kapanId}&process=${process}`
@@ -35,7 +35,7 @@ export class Cart extends Main{
     }
 
     static getPacket = async (kapanId,cutId,process,id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getPacket?id=${id}&kapanId=${kapanId}&cutId=${cutId}&process=${process}`
@@ -61,7 +61,7 @@ export class Cart extends Main{
     }
 
     static addPacket = async (kapanId,id,process,body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         body.user = await Main.getCurrentUser();
@@ -90,10 +90,10 @@ export class Cart extends Main{
 
     static deletePacket = async (kapanId,cutId,process,id,postProcess = false) => {
         //Authentication
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -137,11 +137,11 @@ export class Cart extends Main{
 
     static editPacket = async (kapanId,cutId,process,id,data,postProcess = false) => {
         //Authentication
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
-
-        if(Main.isStaff()){
+        
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -187,10 +187,10 @@ export class Cart extends Main{
 
     static editPacketField = async (kapanId,cutId,process,id,field,data,postProcess = false) => {
         //Authentication
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -236,7 +236,7 @@ export class Cart extends Main{
 
     //SubPackets
     static getSPackets = async (kapanId,cutId,process,id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getSPackets?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`
@@ -262,7 +262,7 @@ export class Cart extends Main{
     }
 
     static getSPacket = async (kapanId,cutId,process,packetId,id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getSPacket?id=${id}&kapanId=${kapanId}&cutId=${cutId}&process=${process}&packetId=${packetId}`
@@ -288,7 +288,7 @@ export class Cart extends Main{
     }
 
     static addSPacket = async (kapanId,cutID,process,id,body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         body.user = await Main.getCurrentUser();
@@ -318,10 +318,10 @@ export class Cart extends Main{
 
     static deleteSPacket = async (kapanId,cutId,process,packetId,id,postProcess = false) => {
         //Authentication
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -364,10 +364,10 @@ export class Cart extends Main{
 
     static editSPacket = async (kapanId,cutId,process,packetId,id,data,postProcess = false) => {
         //Authentication
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -412,10 +412,10 @@ export class Cart extends Main{
 
     static editSPacketField = async (kapanId,cutId,process,packetId,id,field,data,postProcess = false) => {
         //Authentication
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -462,7 +462,7 @@ export class Cart extends Main{
     
     //Carts
     static getCarts = async(kapanId,cutId,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
 
@@ -488,11 +488,11 @@ export class Cart extends Main{
         }
     }
     static weightTransfer = async (kapanId,id,body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
 
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
@@ -533,11 +533,11 @@ export class Cart extends Main{
         }
     }
     static returnMainPacket = async (kapanId,cutId,process,id,body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
 
-        if(Main.isStaff()){
+        if(await Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){

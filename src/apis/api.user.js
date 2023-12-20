@@ -10,7 +10,7 @@ import { Password } from "@mui/icons-material";
 
 export class User extends Main {
     static getUsers = async () => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/getUsers`
@@ -37,7 +37,7 @@ export class User extends Main {
     }
 
     static getUserByID = async (id) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/getUser?id=${id}`
@@ -63,7 +63,7 @@ export class User extends Main {
     }
 
     static addUser = async (body) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/addUser`
@@ -89,7 +89,7 @@ export class User extends Main {
     }
 
     static editUserByID = async (id, body) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/updateUser?id=${id}`
@@ -116,7 +116,7 @@ export class User extends Main {
     }
 
     static deleteUserByID = async (id) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         

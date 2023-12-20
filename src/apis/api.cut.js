@@ -40,7 +40,7 @@ export class Cut extends Main {
     }
 
     static getCuts = async (id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getCuts?id=${id}`
@@ -66,7 +66,7 @@ export class Cut extends Main {
     }
 
     static getCutByID = async (kapanId,id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getCut?id=${id}&kapanId=${kapanId}`
@@ -92,7 +92,7 @@ export class Cut extends Main {
     }
 
     static addCut = async (id,body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addCut?id=${id}`
@@ -120,7 +120,7 @@ export class Cut extends Main {
     }
 
     static editCutByID = async (kapanId,id, body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateCut?id=${id}&kapanId=${kapanId}`
@@ -146,7 +146,7 @@ export class Cut extends Main {
     }
 
     static deleteCutByID = async (kapanId,id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteCut?id=${id}&kapanId=${kapanId}`
@@ -171,8 +171,8 @@ export class Cut extends Main {
         }
     }
 
-    static weightTransfer(kapanId, cutId, weight_a, weight_b, weight) {
-        if(Main.authenticate()){
+    static async weightTransfer(kapanId, cutId, weight_a, weight_b, weight) {
+        if(await Main.authenticate()){
             return
         }
         // const res = Cut.getCutByID(kapan, cut.id)

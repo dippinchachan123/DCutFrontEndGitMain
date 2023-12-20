@@ -81,8 +81,8 @@ const Datatable = ({ ids }) => {
       Cart.editSPacketField(kapanId, cutId, process, packetId, packet.id, "issue", { issue: packets.user })
         .then(res => {
           if (res.err) {
-            // notificationPopup(errors.UPDATE_ERROR,"error")
-            console.log("Error", res.err)
+            // notificationPopup(errors.UPDATE_ER ROR,"error")
+            console.log("Error In Issue", res)
           }
           else {
             setSelectedRowIds(new Set())
@@ -113,14 +113,17 @@ const Datatable = ({ ids }) => {
     Cart.editSPacketField(kapanId, cutId, process, packetId, id, "issue", { issue: null })
       .then(res => {
         if (res.err) {
-          // notificationPopup(errors.UPDATE_ERROR,"error")
           console.log("Error", res.err)
           notificationPopup(errors.UPDATE_ERROR, "error")
         }
         else {
           toggleIssuedPacketForm()
-          notificationPopup(success.UPDATE_SUCCESS, "success")
-
+          handleSubmitRTForm(null,{},id,true)
+          .then(res => {
+            if(!res.err){
+              notificationPopup(success.UPDATE_SUCCESS, "success")
+            }
+          })
           setSelectedRowIds(new Set())
         }
       })
@@ -144,7 +147,6 @@ const Datatable = ({ ids }) => {
       .then(res => {
         if (res.err) {
           console.log("Error", res.err)
-          toggleRTForm()
         }
         else {
           Cart.editSPacketField(kapanId, cutId, process, packetId,id, "loss", { loss: (!dlt) ? rowDetails.weight - formData.weight : 0 })
@@ -153,16 +155,15 @@ const Datatable = ({ ids }) => {
                 notificationPopup("Update Successfull!!(Return Weight not changed.)", "success")
               }
               else {
-                toggleRTForm();
                 notificationPopup(success.UPDATE_SUCCESS, "success")
               }
             })
             .catch(err => {
-              toggleRTForm()
               notificationPopup(errors.UPDATE_ERROR, "error")
             })
         }
-      })
+    })
+    toggleRTForm();
   }
 
   useEffect(() => {

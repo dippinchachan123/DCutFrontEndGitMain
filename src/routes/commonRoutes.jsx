@@ -37,7 +37,6 @@ import { ProtectedRoute, useUser } from "../context/kapanContext";
 
 
 export const GlobalRoute = () => {
-    const user = JSON.parse(localStorage.getItem('user'))
     return (
         <Routes>
             <Route path="/">

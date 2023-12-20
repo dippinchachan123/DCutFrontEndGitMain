@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export class Kapan extends Main {
     static getKapans = async () => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/getKapans`
@@ -37,7 +37,7 @@ export class Kapan extends Main {
     }
 
     static getKapanByID = async (id) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/getKapan?id=${id}`
@@ -63,7 +63,7 @@ export class Kapan extends Main {
     }
 
     static addKapan = async (body) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/addKapan`
@@ -89,7 +89,7 @@ export class Kapan extends Main {
     }
 
     static editKapanByID = async (id, body) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/updateKapan?id=${id}`
@@ -115,7 +115,7 @@ export class Kapan extends Main {
     }
 
     static editKapanFieldByID = async (id, field,body) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/updateKapanByField?id=${id}&field=${field}`
@@ -141,7 +141,7 @@ export class Kapan extends Main {
     }
 
     static deleteKapanByID = async (id) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/deleteKapan?id=${id}`

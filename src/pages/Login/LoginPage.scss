@@ -44,7 +44,7 @@
         button {
             width: 200px;
             background-color: rgb(118 87 81);
-            height: 130%;
+            height: fit-content;
             padding: 10px;
             border-radius: 5px;
             outline: none;
@@ -54,7 +54,7 @@
             color: #fff;
             border: none;
             cursor: pointer;
-        
+            font-size: 40px;
             &:hover {
                 scale: 1.2;
             }

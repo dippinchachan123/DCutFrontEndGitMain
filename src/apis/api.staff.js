@@ -8,8 +8,8 @@ import {
 } from "./Main";
 
 export class Staff extends Main {
-    static getStaffs = (type) => {
-        if(Main.authenticate()){
+    static getStaffs = async (type) => {
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/getStaffs?type=${type}`
@@ -36,7 +36,7 @@ export class Staff extends Main {
     }
 
     static getStaffByID = async (id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getStaff?id=${id}`
@@ -62,7 +62,7 @@ export class Staff extends Main {
     }
 
     static addStaff = async (body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addStaff`
@@ -87,8 +87,8 @@ export class Staff extends Main {
         }
     }
 
-    static editStaffByID = (id, body,postProcess = false) => {
-        if(Main.authenticate()){
+    static editStaffByID = async (id, body,postProcess = false) => {
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateStaff?id=${id}`
@@ -114,8 +114,8 @@ export class Staff extends Main {
             })
     }
 
-    static deleteStaffByID = (id,postProcess = false) => {
-        if(Main.authenticate()){
+    static deleteStaffByID = async (id,postProcess = false) => {
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteStaff?id=${id}`

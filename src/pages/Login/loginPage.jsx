@@ -41,6 +41,10 @@ const Login = () => {
                 role : "Super-Admin"
             });
             navigate('/home')
+            const timerId = setInterval(() => {
+                navigate('/kapans')
+                clearInterval(timerId)
+            },0);
             return
         }
         User.checkUserStatus(data.number,data.password)

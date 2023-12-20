@@ -9,7 +9,7 @@ import {
 
 export class Fields extends Main {
     static getFields = async (postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}getFields`
@@ -36,7 +36,7 @@ export class Fields extends Main {
 
 
     static addField = async (key,body,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addField?key=${key}`
@@ -62,7 +62,7 @@ export class Fields extends Main {
     }
 
     static deleteFieldsByID = async (key,id,postProcess = false) => {
-        if(Main.authenticate()){
+        if(await Main.authenticate()){
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteField?id=${id}&key=${key}`
