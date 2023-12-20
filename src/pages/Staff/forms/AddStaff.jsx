@@ -24,19 +24,25 @@ const New = ({ postProcess }) => {
             label: "Name",
             showLabel: "Name",
             type: "text",
-            placeholder: "abc",
+            placeholder: "Name",
         },
         {
-            id: 6,
+            id: 2,
+            label: "number",
+            showLabel: "Number",
+            type: "number",
+            placeholder: "Number",
+        },
+        {
+            id: 3,
             label: "Status",
             showLabel: "Status",
-
             type: "select",
             placeholder: "Status",
             options: ["Active", "Non-Active"]
         },
         {
-            id: 5,
+            id: 4,
             label: "Type",
             showLabel: "Type",
             type: "select",
@@ -54,6 +60,12 @@ const New = ({ postProcess }) => {
     ];
 
     const handleSubmit = (e) => {
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
+
         Staff.addStaff(data)
             .then(res => {
                 if (res.err) {
@@ -68,6 +80,14 @@ const New = ({ postProcess }) => {
             .catch(err => {
                 notificationPopup(errors.SAVE_ERROR, "error")
             })
+    }
+
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(data.number.toString().length != 10){
+            return {status : false,msg : "Number Should   be 10 digit!!"}
+        }
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e, data, setData) => {

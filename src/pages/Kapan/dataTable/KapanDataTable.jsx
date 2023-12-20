@@ -16,13 +16,11 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { config } from "../../../config";
 
-
 const Datatable = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [user] = useUser();
   const [reload, setReload] = useState(0);
-
 
   //Totals
   let [totalState, setTotalState] = useState({
@@ -47,10 +45,11 @@ const Datatable = () => {
   };
 
   const handleLock = (id, lock) => {
-    const lockStatus = lock.status;
+    const lockStatus = lock.status; 
     if (Main.isStaff(user)) {
       return
     }
+
     Kapan.editKapanFieldByID(id, "lock",
       {
         "lock":
@@ -73,42 +72,27 @@ const Datatable = () => {
             return ele
           }))
           // Locking in frontEnd!!
-          // if (lockStatus) {
-          //   const timerId = setInterval(() => {
-          //     handleLock(id, !lock);
-          //     clearInterval(timerId)
-          //   }, config.UnlockTime)
-          // }
-        }
-      })
-      .catch(err => {
-        console.log("error : ", err)
-        notificationPopup(errors.UPDATE_ERROR, "error")
-      })
-  };
-
-  const lockKapan = (id) => {
-
-    Kapan.editKapanFieldByID(id, "lock",
-      {
-        "lock":
-        {
-          status: true,
-          lockedBy: null
-        }
-      })
-      .then(res => {
-        if (res.err) {
-          console.log("error : ", res.data)
-          notificationPopup(res.msg, "error")
-        }
-        else {
-          setData(data.map(ele => {
-            if (ele.id == id) {
-              ele.lock.status = false
-            }
-            return ele
-          }))
+          if (lockStatus) {
+            const timerId = setInterval(() => {
+              Kapan.getKapanByID(id)
+              .then(res => {
+                if(!res.err){
+                  if(res.data[0].lock.status){
+                    setData(data.map(ele => {
+                      if (ele.id == id) {
+                        ele.lock.status = res.data[0].lock.status
+                      }
+                      return ele
+                    }))
+                    console.log("Locked!!")
+                    clearInterval(timerId)
+                  }
+                }else{
+                  clearInterval(timerId)
+                }
+              })
+            }, config.UnlockTime)
+          }
         }
       })
       .catch(err => {
@@ -139,7 +123,6 @@ const Datatable = () => {
     }
     setTotalState(newState)
   }
-
 
   useEffect(() => {
     Kapan.getKapans()
@@ -229,7 +212,6 @@ const Datatable = () => {
       />
     </div>
   );
-
 };
 
 export default Datatable;

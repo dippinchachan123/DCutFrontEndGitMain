@@ -31,7 +31,6 @@ const Datatable = ({postProcess}) => {
       totalWeight : 0,
       totalPieces : 0
     }
-    console.log(data)
     for(let i = 0;i < data.length;i++){
         let ele = data[i]
         newState.totalWeight += ele.weight;

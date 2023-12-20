@@ -4,7 +4,6 @@ import { config } from "../config";
 
 export class Main {
     static DomainName = config.BACKEND_DOMAIN
-
     static authenticate(){
         if(!Main.getCurrentUser()){
             window.location.href = '/login'
@@ -12,21 +11,18 @@ export class Main {
         }
         return false
     }
-    static getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));
+    static async getCurrentUser() {
+        return await JSON.parse(localStorage.getItem('user'));
     }
 
     static isAdmin(user){
         user = user || this.getCurrentUser()
-
         return user?user.role == "Admin":Main.getCurrentUser() && Main.getCurrentUser().role == "Admin"
     }
 
     static isStaff(user){
         user = user || this.getCurrentUser()
-
         return user?user.role == "Staff":Main.getCurrentUser() && Main.getCurrentUser().role == "Staff"
-
     }
 
     static isSuperAdmin(user){
@@ -36,17 +32,13 @@ export class Main {
 
     static isPreProcess(user){
         user = user || this.getCurrentUser()
-        console.log(user)
-
         if(user.role == "Staff"){
             return user.staff.type == "Pre-Process"
         }
         return false
     }
-    static isPostProcess(user){
+    static  isPostProcess(user){
         user = user || this.getCurrentUser()
-        console.log(user)
-
         if(user.role == "Staff"){
             return user.staff.type == "Post-Process"
         }

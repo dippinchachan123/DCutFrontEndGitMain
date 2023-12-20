@@ -37,7 +37,7 @@ const IssueForm = ({headerDetails,PacketsData,onClose ,onSubmit,postProcess}) =>
     .then(res => {
        if(!res.err){
          setStaffs(res.data)
-         setData({user : res.data[0].id.toString() + '-' + res.data[0].name.toString()})
+         setData({user : res.data[0].id.toString() + '-' + res.data[0].name.toString(),number : res.data[0].number.toString()})
        }
        else{
          notificationPopup(res.msg,"error")
@@ -99,7 +99,7 @@ const IssueForm = ({headerDetails,PacketsData,onClose ,onSubmit,postProcess}) =>
           }
         </div>
         <div className="Submit">
-            <button onClick={(e) => onSubmit(e,{user : data?.user,packets : PacketsData})}>Submit</button>
+            <button onClick={(e) => onSubmit(e,{user : data?.user,number : data?.number,packets : PacketsData})}>Submit</button>
         </div>
       </form>
     </div>

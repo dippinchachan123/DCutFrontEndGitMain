@@ -29,7 +29,14 @@ const Edit = ({ postProcess }) => {
             placeholder: "abc",
         },
         {
-            id: 6,
+            id: 2,
+            label: "number",
+            showLabel: "Number",
+            type: "number",
+            placeholder: "Number",
+        },
+        {
+            id: 3,
             label: "Status",
             showLabel: "Status",
             type: "select",
@@ -37,7 +44,7 @@ const Edit = ({ postProcess }) => {
             options: ["Active", "Non-Active"]
         },
         {
-            id: 5,
+            id: 4,
             label: "Type",
             showLabel: "Type",
             type: "select",
@@ -57,6 +64,12 @@ const Edit = ({ postProcess }) => {
     ];
 
     const handleSubmit = (e, id, data, setData, navigate) => {
+        const val = validate(data);
+        if(!val.status){
+            notificationPopup(val.msg,"error")
+            return
+        }
+
         Staff.editStaffByID(id, data)
             .then(res => {
                 console.log("updating staff : ", res)
@@ -71,6 +84,14 @@ const Edit = ({ postProcess }) => {
             .catch(err => {
                 notificationPopup(errors.UPDATE_ERROR, "error")
             })
+    }
+
+    function validate(data){
+        console.log("Validating Data : ",data)
+        if(data.number.toString().length != 10){
+            return {status : false,msg : "Number Should   be 10 digit!!"}
+        }
+        return {status : true,msg : ""}
     }
 
     const handleChange = (e, data, setData) => {

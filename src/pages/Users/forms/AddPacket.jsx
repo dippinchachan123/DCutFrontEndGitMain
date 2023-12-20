@@ -57,13 +57,15 @@ const New = () => {
             id: 2,
             label: "Password",
             type: "text",
-            placeholder: "10",
+            placeholder: "pasword",
         },
         {
             id: 3,
             label: "Number",
             type: "number",
             placeholder: "00000XXXXX",
+            defaultValue : data.role == "Staff" && data.staff?data.staff.number:"000011XXXX",
+            disable : data.role == "Staff"?true:false
         },
         
     ]
@@ -94,10 +96,15 @@ const New = () => {
         const value = type == "number" ? Number(name == "img" ? e.target.files[0] : e.target.value) :
             name == "img" ? e.target.files[0] : e.target.value
 
-        setData({ ...data, [name]: value })
+        if(name == 'role'){
+            setData({ ...data, [name]: value ,number : ''})
+        }else{
+            setData({ ...data, [name]: value })
+        }    
     }
+    
     const handleChangeAutoCompleteBox = (e,v,name) => {
-        setData({ ...data, [name]: v })
+        setData({ ...data, [name] : v ,number : v.number,type : v.type})
     }
 
 

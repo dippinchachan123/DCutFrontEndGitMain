@@ -72,6 +72,7 @@ const Edit = () => {
             notificationPopup(val.msg,"error")
             return
         }
+
         Cart.editSPacket(kapanId, cutId, process, packetId, id, data)
             .then(res => {
                 if (res.err || !res.data) {

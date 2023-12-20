@@ -83,6 +83,12 @@ const Datatable = () => {
       },
     },
     {
+      field: "number",
+      headerName: "Phone No.",
+      width: 250,
+    },
+
+    {
       field: "type",
       headerName: "Type",
       width: 220,

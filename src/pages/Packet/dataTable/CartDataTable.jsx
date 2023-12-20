@@ -18,12 +18,15 @@ import { config } from "../../../config";
 import { generatePrintPdf } from "../../../components/PDFs/printPackets";
 import { Main } from "../../../apis/Main";
 import { useUser } from "../../../context/kapanContext";
+import { Kapan } from "../../../apis/api.kapan";
 
 
 const Datatable = ({ ids }) => {
   const [data, setData] = useState([]);
   const [user] = useUser()
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
+  const [lock,setLock] = useState({status : true});
+
   const [kapanId, cutId, process, packetId] = ids.split("-").map(ele => {
     if (!isNaN(ele)) {
       return parseInt(ele)
@@ -66,10 +69,11 @@ const Datatable = ({ ids }) => {
   };
 
   const downloadPdf = async (data,to) => {
-    const pdf = new jsPDF();
-    const processName = process.replaceAll("_"," ")
+    const pdf = new jsPDF('l');
+    pdf.setFont("Calibri", "bold");
+    pdf.setTextColor(14, 3, 64);    const processName = process.replaceAll("_"," ")
     await generateIssuePdf(pdf,{data,to,kapanId,cutId,process : processName});
-    pdf.save(`issuePacketsTo${to.split('-')[1]}.pdf`);
+    pdf.save(`issuePacketsTo${to.name.split('-')[1]}.pdf`);
   };
 
   const handleSubmitIssueForm = (e, packets, dlt = false) => {
@@ -86,7 +90,7 @@ const Datatable = ({ ids }) => {
         })
     })
     toggleISForm()
-    downloadPdf(packets.packets,packets.user)
+    downloadPdf(packets.packets,{name : packets.user,number : packets.number})
   }
 
   async function printPackets(data){
@@ -95,9 +99,13 @@ const Datatable = ({ ids }) => {
     pdf.setFontSize(14);
     pdf.setTextColor(14, 3, 64);    
     const processName = process.replaceAll("_"," ")
+    data = data.map((ele)=>{
+      ele.url = `${config.FRONTEND_DOMAIN}/${"Packet"}/${kapanId}-${cutId}-${process}-${packetId}`
+      return ele;
+    })
 
-    await generatePrintPdf(pdf,{data,kapanId,cutId,processName,url : `${config.FRONTEND_DOMAIN}/${"Packet"}/${kapanId}-${cutId}-${process}-${packetId}`});
-    pdf.save(`printPackets.pdf`);
+    await generatePrintPdf(pdf,{data,kapanId,cutId,process : processName});
+    pdf.save(`printPackets_${process}.pdf`);
     setSelectedRowIds(new Set())
   }
 
@@ -171,6 +179,33 @@ const Datatable = ({ ids }) => {
         notificationPopup(err, "error")
       })
   }, [ids, IssueFormVisibility, IssuedPacketVisibility,RTFormVisibility])
+
+  useEffect(()=>{
+    Kapan.getKapanByID(kapanId)
+    .then(res => {
+        setLock({status : res.data[0].lock.status})
+    })
+    .catch(err => {
+      console.log("Error in fetching Lock Field of kapan : ",err)
+    })
+  },[])
+
+  useEffect(()=>{
+    const timerId = setInterval(()=>{
+        Kapan.getKapanByID(kapanId)
+        .then(res => {
+            setLock({status : res.data[0].lock.status})
+            if(res.data[0].lock.status){
+                  console.log("Locked!!")
+                  clearInterval(timerId)
+            }
+        })
+        .catch(err => {
+          clearInterval(timerId)
+          console.log("Error in fetching Lock Field of kapan : ",err)
+        })
+    },config.UnlockTime)
+  },[])
 
   const userColumns = [
     { field: "id", headerName: "P No.", width: 70 },
@@ -261,28 +296,7 @@ const Datatable = ({ ids }) => {
     },
   ];
 
-  const actionColumn = [
-    {
-      field: "issued",
-      headerName: "Issued To",
-      width: 400,
-      renderCell: (params) => {
-        if (!params.row.issue) {
-          return (
-            <button className='return cancel' onClick={(e) => toggleIssuedPacketForm(e)}>
-              <div style={{ padding: '5px' }} ><CancelIcon /></div>
-            </button>
-          )
-        }
-        else {
-          console.log("Issued row : ", params.row.issue)
-          return (<button className='return check' onClick={(e) => toggleIssuedPacketForm(e)}>
-            {<div style={{ display: "flex", flexDirection: "row", padding: '5px', columnGap: '5px', alignItems: 'centre' }}><CheckCircleIcon />
-              <h3 style={{ alignSelf: 'center' }}>{params.row.issue?.split("-")[1]}</h3></div>}
-          </button>)
-        }
-      }
-    },
+  let actionColumn = [
     {
       field: "action",
       headerName: "Action",
@@ -307,7 +321,33 @@ const Datatable = ({ ids }) => {
         );
       },
     },
+    {
+      field: "issued",
+      headerName: "Issued To",
+      width: 400,
+      renderCell: (params) => {
+        if (!params.row.issue) {
+          return (
+            <button className='return cancel' onClick={(e) => toggleIssuedPacketForm(e)}>
+              <div style={{ padding: '5px' }} ><CancelIcon /></div>
+            </button>
+          )
+        }
+        else {
+          console.log("Issued row : ", params.row.issue)
+          return (<button className='return check' onClick={(e) => toggleIssuedPacketForm(e)}>
+            {<div style={{ display: "flex", flexDirection: "row", padding: '5px', columnGap: '5px', alignItems: 'centre' }}><CheckCircleIcon />
+              <h3 style={{ alignSelf: 'center' }}>{params.row.issue?.split("-")[1]}</h3></div>}
+          </button>)
+        }
+      }
+    },
+    
   ];
+
+  if(Main.lockForStaff(user,lock)){
+    actionColumn = actionColumn.filter(ele => ele.field != "action")
+  }
 
   return (
     <div className="datatable">

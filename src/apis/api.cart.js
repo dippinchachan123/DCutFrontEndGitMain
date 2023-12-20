@@ -64,7 +64,8 @@ export class Cart extends Main{
         if(Main.authenticate()){
             return
         }
-        
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addPacket?id=${id}&kapanId=${kapanId}&process=${process}`
         try {
             const res = await axios.post(api, body)
@@ -139,6 +140,7 @@ export class Cart extends Main{
         if(Main.authenticate()){
             return
         }
+
         if(Main.isStaff()){
             const kapan = await Kapan.getKapanByID(kapanId);
             if(!kapan.err){
@@ -158,9 +160,9 @@ export class Cart extends Main{
             }
         }
 
-
-
-
+        data.user = await Main.getCurrentUser();
+        console.log("Data Here : ",data)
+        
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updatePacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`
         try {
             const res = await axios.post(api,data);
@@ -207,6 +209,7 @@ export class Cart extends Main{
             }
         }
 
+        data.user = await Main.getCurrentUser();
 
 
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updatePacketField?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&field=${field}`
@@ -288,6 +291,9 @@ export class Cart extends Main{
         if(Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
+        console.log("req",body)
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addSPacket?id=${id}&kapanId=${kapanId}&cutId=${cutID}&process=${process}`
         try {
             const res = await axios.post(api, body)
@@ -311,9 +317,29 @@ export class Cart extends Main{
     }
 
     static deleteSPacket = async (kapanId,cutId,process,packetId,id,postProcess = false) => {
+        //Authentication
         if(Main.authenticate()){
             return
         }
+        if(Main.isStaff()){
+            const kapan = await Kapan.getKapanByID(kapanId);
+            if(!kapan.err){
+                if(kapan.data[0].lock.status){
+                    return {
+                        err: true,
+                        data: kapan.data,
+                        msg: "Kapan is Locked!!"
+                    }
+                }
+            }else{
+                return {
+                    err: false,
+                    data: kapan,
+                    msg: success.DELETION_SUCCESS
+                }
+            }
+        }
+        
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteSPacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&packetId=${packetId}`
         try {
             const res = await axios.post(api);
@@ -360,6 +386,7 @@ export class Cart extends Main{
             }
         }
 
+        data.user = await Main.getCurrentUser();
 
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateSPacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&packetId=${packetId}`
         try {
@@ -407,6 +434,9 @@ export class Cart extends Main{
             }
         }
 
+        data.user = await Main.getCurrentUser();
+
+        console.log("req",data)
 
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateSPacketField?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&packetId=${packetId}&field=${field}`
         try {

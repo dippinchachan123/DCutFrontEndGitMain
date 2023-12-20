@@ -8,6 +8,8 @@ import { errors, success } from "../../enums/messages"
 import { useNavigate } from "react-router-dom"
 import {  useUser } from "../../context/kapanContext";
 import { Main } from "../../apis/Main"
+import Logo from '../../LOGO.jpeg'
+
 
 
 const Login = () => {
@@ -45,6 +47,7 @@ const Login = () => {
         .then(res => {
             if(!res.err){
                 if(res.data.valid){
+                    <label>Sign In</label>
                     notificationPopup(res.msg,"success")
                     setUser(res.data.data[0]);
                     navigate(Main.isStaff(res.data.data[0])?(Main.isPostProcess(res.data.data[0])?'/PPkapans/1':'/kapans'):'/home')
@@ -66,7 +69,7 @@ const Login = () => {
         <div className="LoginPage">
             <div className="LoginForm">
                 <div className="Top">
-                    <label>Sign In</label>
+                    <img className={"Logo"} src={Logo} width= '305px' height={'155px'} style={{padding : "5px"}}/>
                 </div>
                 <div className="Mid">
                     <div className="formField">

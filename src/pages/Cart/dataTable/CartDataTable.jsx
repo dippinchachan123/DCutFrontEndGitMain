@@ -24,15 +24,18 @@ import { useUser } from "../../../context/kapanContext";
 
 const Datatable = ({ ids,postProcess }) => {
   const [data, setData] = useState([]);
+  
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
+  
   const [user] = useUser();
+
   const [kapanId, cutId, process] = ids.split("-").map(ele => {
     if (!isNaN(ele)) {
       return parseInt(ele)
     } return ele
   })
 
-  const [lock,setLock] = useState({status : true,byApi : false});
+  const [lock,setLock] = useState({status : true});
   const [RTFormVisibility, setRTFormVisibility] = useState(false);
   const [BoilFormVisibility, setBoilFormVisibility] = useState(false);
   const [IssueFormVisibility, setIssueFormVisibility] = useState(false);
@@ -135,13 +138,16 @@ const Datatable = ({ ids,postProcess }) => {
   }
 
   const downloadPdf = async (data,to) => {
-    const pdf = new jsPDF();
+    const pdf = new jsPDF('l');
+    pdf.setFont("Calibri", "bold");
+    pdf.setTextColor(14, 3, 64);
     const processName = (postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_"," ")
     await generateIssuePdf(pdf,{data,to,kapanId,cutId,process : processName});
-    pdf.save(`issuePacketsTo${to.split('-')[1]}.pdf`);
+    pdf.save(`issuePacketsTo${to.name.split('-')[1]}.pdf`);
   };
 
   const handleSubmitIssueForm = (e, packets, dlt = false) => {
+    console.log("Packets : ",packets)
     packets.packets.length && packets.packets.forEach(packet => {
       Cart.editPacketField(kapanId, cutId, process, packet.id, "issue", { issue: packets.user },postProcess)
         .then(res => {
@@ -155,7 +161,7 @@ const Datatable = ({ ids,postProcess }) => {
         })
     })
     toggleISForm()
-    downloadPdf(packets.packets,packets.user)
+    downloadPdf(packets.packets,{name : packets.user,number : packets.number})
   }
 
   async function printPackets(data){
@@ -169,7 +175,7 @@ const Datatable = ({ ids,postProcess }) => {
         return ele;
     })
     await generatePrintPdf(pdf,{data,kapanId,cutId,process : processName});
-    pdf.save(`printPackets.pdf`);
+    pdf.save(`printPackets_${process}.pdf`);
     setSelectedRowIds(new Set())
   }
 
@@ -220,22 +226,31 @@ const Datatable = ({ ids,postProcess }) => {
   useEffect(()=>{
     Kapan.getKapanByID(kapanId)
     .then(res => {
-        console.log(res)
         setLock({status : res.data[0].lock.status})
-        if(!res.data[0].lock.status){
-          console.log("Set Timer...")
-
-          const TimerID = setInterval(() => {
-              console.log("Locking....")
-              setLock({status : true})
-              clearInterval(TimerID)
-          },config.UnlockTime)
-        }
     })
     .catch(err => {
       console.log("Error in fetching Lock Field of kapan : ",err)
     })
   },[])
+
+  useEffect(()=>{
+    const timerId = setInterval(()=>{
+        Kapan.getKapanByID(kapanId)
+        .then(res => {
+            setLock({status : res.data[0].lock.status})
+            if(res.data[0].lock.status){
+                  console.log("Locked!!")
+                  clearInterval(timerId)
+            }
+        })
+        .catch(err => {
+          clearInterval(timerId)
+          console.log("Error in fetching Lock Field of kapan : ",err)
+        })
+    },config.UnlockTime)
+  },[])
+
+ 
 
   const userColumns1 = [
     { field: "id", headerName: "P No.", width: 70 },

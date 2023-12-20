@@ -65,21 +65,20 @@ const MyPdfComponent = () => {
   const pdfIframeRef = useRef(null);
 
   const handleGeneratePdf = async () => {
+    const pdf = new jsPDF('l')
     // const pdf = new jsPDF('l', 'mm', [400, 200]);
-    // pdf.setFont("Calibri", "bold");
+    pdf.setFont("Calibri", "bold");
     // pdf.setFontSize(14);
-    // pdf.setTextColor(14, 3, 64);
-    const pdf = new jsPDF()
-
-
+    pdf.setTextColor(14, 3, 64);
+    // const pdf = new jsPDF()
     // Document of 297mm wide and 210mm high
-    
+
     const data = getData()
-    const to = "1-Dippin Chachan"
+    const to = {name : "1-Dippin Chachan",number : '9610938979'}
     
     await new Promise(async (resolve) => {
-      await generateIssuePdf(pdf, { data, to ,kapanId : 1,cutId : 1});
-      // await generatePrintPdf(pdf, { data, to ,kapanId : 1,cutId : 1});
+      await generateIssuePdf(pdf, { data, to ,kapanId : 1,process : "LASER_LOTING",cutId : 1});
+      // await generatePrintPdf(pdf, { data, to ,kapanId : 1,cutId : 1,process:"LASER_LOTING"});
       resolve();
     });
     
@@ -96,7 +95,7 @@ const MyPdfComponent = () => {
       <iframe
         title="Generated PDF"
         ref={pdfIframeRef}
-        style={{ width: '100%', height: '600px' }}
+        style={{ width: '100%', height: '1000px' }}
       />
     </div>
   );

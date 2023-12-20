@@ -25,11 +25,12 @@ const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const navigate = useNavigate();
   const [user,setUser] = useUser();
-
+  
   const handleLogOut = ()=> {
       localStorage.setItem('user', null);
       navigate('/')
   }
+
   return user && (
     <div className="sidebar">
       <div className="top">
