@@ -4,7 +4,7 @@ import Navbar from "../../components/navbar/Navbar"
 import Datatable from "./dataTable/KapanDataTable"
 import {  useUser } from "../../context/kapanContext";
 
-const Kapans = () => {
+const Kapans = ({postProcess}) => {
   const [user,setUser] = useUser();
   
 
@@ -13,7 +13,7 @@ const Kapans = () => {
       <Sidebar/>
       <div className="listContainer">
         <Navbar/>
-        <Datatable/>
+        <Datatable postProcess={postProcess}/>
       </div>
     </div>
   )

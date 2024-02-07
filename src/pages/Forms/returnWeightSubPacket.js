@@ -71,6 +71,15 @@ const SubReturnForm = ({ headerDetails ,weights,onClose , onSubmission}) => {
                 <div style={{display:'flex',columnGap:'10px',marginTop : '3px'}}>
                   <input
                     type="number"
+                    name={"pieces"}
+                    label={"Pieces"}
+                    id =  {"pieces"}
+                    value={data.pieces || 0}
+                    onChange={(e)=> handleChange(e,false)}
+                    placeholder="Enter piece"
+                  />
+                  <input
+                    type="number"
                     name={"weight"}
                     label={"Weight"}
                     id =  {"weight"}
@@ -79,15 +88,7 @@ const SubReturnForm = ({ headerDetails ,weights,onClose , onSubmission}) => {
                     placeholder="Enter weight"
                     width={'200px'}
                   />
-                  <input
-                    type="number"
-                    name={"pieces"}
-                    label={"Pieces"}
-                    id =  {"pieces"}
-                    value={data.pieces || 0}
-                    onChange={(e)=> handleChange(e,false)}
-                    placeholder="Enter piece"
-                  />
+                 
                 </div>
               </div>
           }

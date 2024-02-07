@@ -13,8 +13,6 @@ import {  useUser } from "../../../context/kapanContext";
 
 const Single = ({postProcess}) => {  
   const [user,setUser] = useUser();
-  const {id} = useParams();
-
   return (
     <div className="single">
       <Sidebar />

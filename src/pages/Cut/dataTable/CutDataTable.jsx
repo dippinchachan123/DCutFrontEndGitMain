@@ -16,15 +16,13 @@ const Datatable = ({postProcess}) => {
   const [data, setData] = useState([]);
   const [user] = useUser();
   let kapanId = parseInt(useParams().id);
-  if(postProcess){
-    kapanId = 1
-  }
   const navigate = useNavigate();
 
   let [totalState,setTotalState] = useState({
     totalWeight : 0,
     totalPieces : 0
   })
+
 
   const iterateCuts = async (data)=>{
     const newState = {
@@ -39,29 +37,36 @@ const Datatable = ({postProcess}) => {
     setTotalState(newState)
   }
 
+
   const handleDelete = (id) => {
-    Cut.deleteCutByID(kapanId,id,postProcess)
-      .then(res => {
-        if (res.err) {
-          notificationPopup(res.msg, "error")
-        }
-        else {
-          notificationPopup(res.msg, "success")
-          setData(data.filter((item) => item.id !== id));
-        }
-      })
-      .catch(err => {
-        notificationPopup(errors.DELETION_ERROR, "error")
-      })
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      Cut.deleteCutByID(kapanId,id,postProcess)
+        .then(res => {
+          if (res.err) {
+            notificationPopup(res.msg, "error")
+          }
+          else {
+            notificationPopup(res.msg, "success")
+            setData(data.filter((item) => item.id !== id));
+          }
+        })
+        .catch(err => {
+          notificationPopup(errors.DELETION_ERROR, "error")
+        })
+    }
   };
+
 
   const handleView = (id) => {
     navigate(`/${postProcess?"PP":""}cuts/${kapanId}-${id}`)
   };
 
+
   const handleEdit = (id) => {
     navigate(`/${postProcess?"PP":""}cuts/edit/${kapanId}-${id}`)
   };
+
 
   useEffect(() => {
     Cut.getCuts(kapanId,postProcess)
@@ -76,10 +81,12 @@ const Datatable = ({postProcess}) => {
       })
   }, [])
 
+
   const getTableData = (data) => {
     // Create a deep copy of the data array to avoid modifying the original array
     return JSON.parse(JSON.stringify(data));
   };
+
 
   const actionColumn = [
     {
@@ -113,6 +120,7 @@ const Datatable = ({postProcess}) => {
     },
   ];
 
+  
   return (
     <div className="datatable">
       <div className="datatableTitle">
@@ -121,7 +129,7 @@ const Datatable = ({postProcess}) => {
           Add New
         </Link>}
       </div>
-      <DataTableInfoBox infoData={[{label : "Weight",value : totalState.totalWeight},{label : "Pieces",value : totalState.totalPieces}]}/>
+      <DataTableInfoBox infoData={[{label : "Weight",value : totalState.totalWeight.toFixed(2)},{label : "Pieces",value : totalState.totalPieces.toFixed(2)}]}/>
       <DataGrid
         className="datagrid"
         rows={getTableData(data)}

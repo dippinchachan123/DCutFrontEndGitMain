@@ -5,7 +5,7 @@ import logoImage from '../../LOGO.jpeg';
 export const generateIssuePdf = async (pdf, {
   data,
   to,
-  kapanId,
+  kapanWgt,
   process,
   cutId
 }) => {
@@ -51,7 +51,7 @@ export const generateIssuePdf = async (pdf, {
 
 
   // Example: Add a table using jspdf-autotable
-  const columns = ['KAPAN NO', 'CUT NO', 'S NO', 'PROCESS', 'CUTTING', 'PCS', 'WEIGHT', 'RATE', 'KA WGT', 'Re SIGN'];
+  const columns = ['KAPAN WG', 'CUT NO', 'S NO', 'PROCESS', 'CUTTING', 'PCS', 'WEIGHT', 'RATE', 'KA WGT', 'Re SIGN'];
   let totalPcs = 0;
   let totalWeight = 0;
   let totalKaWeight = 0;
@@ -64,10 +64,6 @@ export const generateIssuePdf = async (pdf, {
 
     if (typeof element.weight === 'number' && !isNaN(element.weight)) {
       totalWeight += element.weight;
-    }
-
-    if (typeof element.kaWgt === 'number' && !isNaN(element.kaWgt)) {
-      totalKaWeight += element.kaWgt;
     }
   }
 
@@ -82,7 +78,8 @@ export const generateIssuePdf = async (pdf, {
     return initials;
   }
 
-  const rows = data.map(item => [kapanId, cutId, item.id, generateShortcut(process), item.cutting || "NA", item.pieces, item.weight, "                ", item.kaWgt || "NA", '']);
+  const rows = data.map(item =>{ 
+      return [kapanWgt, cutId, item.id, generateShortcut(process), item.cutting?.value || "              ", item.pieces, item.weight, "                ","               ", '']});
   rows.push([
     "Total",
     "",
@@ -92,7 +89,7 @@ export const generateIssuePdf = async (pdf, {
     totalPcs,
     totalWeight,
     "            ",
-    totalKaWeight,
+    "            ",
     ""
   ])
   console.log(rows)

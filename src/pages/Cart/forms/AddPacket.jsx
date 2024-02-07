@@ -259,10 +259,10 @@ const New = ({postProcess}) => {
                                         <div className="formInput" key={input.id}>
                                             <label htmlFor="selectBox">{input.label}</label>
                                             <select
-                                                id={"selectBox" + input.label}
-                                                name={input.label.toLowerCase()}
-                                                value={data ? data[input.label.toLowerCase()] : ""}
-                                                onChange={handleChange}
+                                                id = {"selectBox" + input.label}
+                                                name = {input.label.toLowerCase()}
+                                                value = {data ? data[input.label.toLowerCase()] : ""}
+                                                onChange = {handleChange}
                                             >
                                                 {getSearchComboBoxOptions(input.options)}
                                             </select>
@@ -292,6 +292,82 @@ const New = ({postProcess}) => {
                                     <Select className="SelectBox"
                                         value={data ? data["charni"] : ""}
                                         name={"charni"}
+                                        onChange={handleChange}
+                                    >
+                                        {charni.map((option, index) => (
+                                            <MenuItem key={index} value={option}>
+                                                <div style={{ display: "flex", flexDirection: "row", width : '300px',justifyContent : 'space-between', alignItems: 'center' }}>
+                                                    <div>{option.value}</div>
+                                                    <Button variant="sideButton" style={{ margin: 0, height: '30px' }} onClick={(e) => removeOptionsInSelect(e, "charni", charni, setCharni, option.id)} >
+                                                        <CloseIcon sx={{ fontSize: '40px', alignSelf: 'center' }} />
+                                                    </Button>
+                                                </div>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    <Button variant="contained" style={{ margin: 0, height: '49px' }} onClick={()=>toggleAddOptions("charni")}>
+                                        <ArrowDropDownCircleSharpIcon sx={{ fontSize: '30px', alignSelf: 'center' , transform: `rotate(${addOptionVisibility.charni.active?180:0}deg)` }} />
+                                    </Button>
+                                </div>
+                                {addOptionVisibility.charni.active && 
+                                    <div style={{display  : "flex",justifyContent : 'left',alignItems : 'center',marginTop : '5px'}}>
+                                        <TextField 
+                                        variant="filled" 
+                                        name= "charni"
+                                        onChange={handleChangeAddNewField}
+                                        />
+                                        <Button variant="contained" style={{ margin : 0,marginLeft : '7px', height: '32px',width : '20px' }} onClick={(e) => addOptionsInSelect(e, "charni", charni, setCharni)}>
+                                            <AddIcon sx={{ fontSize: '20px', alignSelf: 'center' }} />
+                                        </Button>
+                                    </div>    
+                                }
+                            </div>}
+
+                            {!postProcess && [pc.POLISH_LOTING,pc.POLISH_TABLE_LOTING,pc.GHAT_LOTING].includes(process) 
+                            && <div className="formInput" key={"Charni2"}>
+                                <label htmlFor="selectBox">Charni2</label>
+                                <div className='selectBoxContainer'>
+                                    <Select className="SelectBox"
+                                        value={data ? data["charni2"] : ""}
+                                        name={"charni2"}
+                                        onChange={handleChange}
+                                    >
+                                        {charni.map((option, index) => (
+                                            <MenuItem key={index} value={option}>
+                                                <div style={{ display: "flex", flexDirection: "row", width : '300px',justifyContent : 'space-between', alignItems: 'center' }}>
+                                                    <div>{option.value}</div>
+                                                    <Button variant="sideButton" style={{ margin: 0, height: '30px' }} onClick={(e) => removeOptionsInSelect(e, "charni", charni, setCharni, option.id)} >
+                                                        <CloseIcon sx={{ fontSize: '40px', alignSelf: 'center' }} />
+                                                    </Button>
+                                                </div>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    <Button variant="contained" style={{ margin: 0, height: '49px' }} onClick={()=>toggleAddOptions("charni")}>
+                                        <ArrowDropDownCircleSharpIcon sx={{ fontSize: '30px', alignSelf: 'center' , transform: `rotate(${addOptionVisibility.charni.active?180:0}deg)` }} />
+                                    </Button>
+                                </div>
+                                {addOptionVisibility.charni.active && 
+                                    <div style={{display  : "flex",justifyContent : 'left',alignItems : 'center',marginTop : '5px'}}>
+                                        <TextField 
+                                        variant="filled" 
+                                        name= "charni"
+                                        onChange={handleChangeAddNewField}
+                                        />
+                                        <Button variant="contained" style={{ margin : 0,marginLeft : '7px', height: '32px',width : '20px' }} onClick={(e) => addOptionsInSelect(e, "charni", charni, setCharni)}>
+                                            <AddIcon sx={{ fontSize: '20px', alignSelf: 'center' }} />
+                                        </Button>
+                                    </div>    
+                                }
+                            </div>}
+
+                            {!postProcess && [pc.POLISH_LOTING,pc.POLISH_TABLE_LOTING,pc.GHAT_LOTING].includes(process) 
+                            && <div className="formInput" key={"Charni3"}>
+                                <label htmlFor="selectBox">Charni3</label>
+                                <div className='selectBoxContainer'>
+                                    <Select className="SelectBox"
+                                        value={data ? data["charni3"] : ""}
+                                        name={"charni3"}
                                         onChange={handleChange}
                                     >
                                         {charni.map((option, index) => (
@@ -371,7 +447,7 @@ const New = ({postProcess}) => {
 
                             </div>}
 
-                            {!postProcess && [pc.POLISH_LOTING].includes(process) 
+                            {!postProcess && [pc.POLISH_LOTING,pc.POLISH_TABLE_LOTING].includes(process) 
                             && <div className="formInput" key={"Color2"}>
                                 <label htmlFor="selectBox">Color 2</label>
                                 <div className='selectBoxContainer'>
@@ -419,7 +495,7 @@ const New = ({postProcess}) => {
 
                             </div>}
 
-                            {!postProcess && [pc.POLISH_LOTING].includes(process) 
+                            {!postProcess && [pc.POLISH_LOTING,pc.POLISH_TABLE_LOTING].includes(process) 
                             && <div className="formInput" key={"Color3"}>
                                 <label htmlFor="selectBox">Color 3</label>
                                 <div className='selectBoxContainer'>

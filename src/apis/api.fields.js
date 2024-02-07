@@ -34,11 +34,12 @@ export class Fields extends Main {
         }
     }
 
-
     static addField = async (key,body,postProcess = false) => {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addField?key=${key}`
         try {
             const res = await axios.post(api, body)
@@ -67,7 +68,7 @@ export class Fields extends Main {
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteField?id=${id}&key=${key}`
         try {
-            const res = await axios.post(api);
+            const res = await axios.post(api,{user : Main.getCurrentUser()});
             const res_1 = res.data;
             return res_1.err || res_1.notFound ? {
                 err: true,

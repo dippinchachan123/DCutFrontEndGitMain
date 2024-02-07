@@ -22,11 +22,11 @@ import { Main } from "../../../apis/Main";
 import { useUser } from "../../../context/kapanContext";
 
 
-const Datatable = ({ ids,postProcess }) => {
+const Datatable = ({ ids, postProcess }) => {
   const [data, setData] = useState([]);
-  
+
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
-  
+
   const [user] = useUser();
 
   const [kapanId, cutId, process] = ids.split("-").map(ele => {
@@ -35,77 +35,73 @@ const Datatable = ({ ids,postProcess }) => {
     } return ele
   })
 
-  const [lock,setLock] = useState({status : true});
+  const [lock, setLock] = useState({ status: true });
   const [RTFormVisibility, setRTFormVisibility] = useState(false);
   const [BoilFormVisibility, setBoilFormVisibility] = useState(false);
   const [IssueFormVisibility, setIssueFormVisibility] = useState(false);
   const [IssuedPacketVisibility, setIssuedPacketVisibility] = useState(false);
   const [rowDetails, setRowDetails] = useState(null);
   const navigate = useNavigate();
-
   const handleDelete = (id) => {
-    Cart.deletePacket(kapanId, cutId, process, id,postProcess)
-      .then(res => {
-        if (res.err) {
-          notificationPopup(res.msg, "error")
-        }
-        else {
-          notificationPopup(res.msg, "success")
-          setData(data.filter((item) => item.id !== id));
-        }
-      })
-      .catch(err => {
-        notificationPopup(errors.DELETION_ERROR, "error")
-      })
-  };
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      Cart.deletePacket(kapanId, cutId, process, id, postProcess)
+        .then(res => {
+          if (res.err) {
+            notificationPopup(res.msg, "error")
+          }
+          else {
+            notificationPopup(res.msg, "success")
+            setData(data.filter((item) => item.id !== id));
+          }
+        })
+        .catch(err => {
+          notificationPopup(errors.DELETION_ERROR, "error")
+        })
+    }
 
+  };
   const getTableData = (data) => {
     // Create a deep copy of the data array to avoid modifying the original array4
     return data;
   };
-
   const handleView = (id) => {
     navigate(`/Packet/${ids}-${id}`)
   };
-
   const handleEdit = (id) => {
-    navigate(`/${postProcess?"PP":""}Cart/Edit/${ids}-${id}`)
+    navigate(`/${postProcess ? "PP" : ""}Cart/Edit/${ids}-${id}`)
   }
-
-  const toggleRTForm = (e,issue,boil,isReturn) => {
-    if(process == PRE_PROCESS_TYPES.LASER_LOTING){
-      isReturn?.returnWeight || boil || RTFormVisibility?setRTFormVisibility(!RTFormVisibility):notificationPopup("Boil Packet First!!","error")
-    }else{
-      isReturn || issue || RTFormVisibility ?setRTFormVisibility(!RTFormVisibility):notificationPopup("Issue Packet First!!","error")
+  const toggleRTForm = (e, issue, boil, isReturn) => {
+    if (process == PRE_PROCESS_TYPES.LASER_LOTING) {
+      isReturn?.returnWeight || boil || RTFormVisibility ? setRTFormVisibility(!RTFormVisibility) : notificationPopup("Boil Packet First!!", "error")
+    } else {
+      isReturn || issue || RTFormVisibility ? setRTFormVisibility(!RTFormVisibility) : notificationPopup("Issue Packet First!!", "error")
     }
   }
-
-  const toggleBoilForm = (e,isAllRtrn,isBoil) => {
-    if(isAllRtrn || BoilFormVisibility || process != PRE_PROCESS_TYPES.LASER_LOTING || isBoil){
-        setBoilFormVisibility(!BoilFormVisibility)
-    }else{
-      notificationPopup("Return All SubPacket First!!","error")
+  const toggleBoilForm = (e, isAllRtrn, isBoil) => {
+    if (isAllRtrn || BoilFormVisibility || process != PRE_PROCESS_TYPES.LASER_LOTING || isBoil) {
+      setBoilFormVisibility(!BoilFormVisibility)
+    } else {
+      notificationPopup("Return All SubPacket First!!", "error")
     }
   }
-
   const toggleISForm = (e) => {
     setIssueFormVisibility(!IssueFormVisibility)
   }
   const toggleIssuedPacketForm = (e) => {
     setIssuedPacketVisibility(!IssuedPacketVisibility)
   }
-
   const handleSubmitRTForm = (e, formData, id, dlt = false) => {
-    Cart.returnMainPacket(kapanId, cutId, process, id, dlt ? { weights: null, returnWeight: 0 } : formData,postProcess)
+    Cart.returnMainPacket(kapanId, cutId, process, id, dlt ? { weights: null, returnWeight: 0 } : formData, postProcess)
       .then(res => {
         if (res.err) {
           notificationPopup(res.msg, "error")
         }
         else {
-          Cart.editPacketField(kapanId, cutId, process, id, "loss", { loss: (!dlt) ? rowDetails.weight - formData.returnWeight : 0 },postProcess)
+          Cart.editPacketField(kapanId, cutId, process, id, "loss", { loss: (!dlt) ? rowDetails.weight - formData.returnWeight : 0 }, postProcess)
             .then(res => {
               if (res.err) {
-                console.log("Error :",res)
+                console.log("Error :", res)
                 notificationPopup("Update Successfull!!(Return Weight not changed.)", "success")
               }
               else {
@@ -122,9 +118,8 @@ const Datatable = ({ ids,postProcess }) => {
         notificationPopup(errors.UPDATE_ERROR, "error")
       })
   }
-
   const handleSubmitBoilForm = (e, formData, id, dlt = false) => {
-    Cart.editPacketField(kapanId, cutId, process, id, "boil", { boil: dlt ? null : formData },postProcess)
+    Cart.editPacketField(kapanId, cutId, process, id, "boil", { boil: dlt ? null : formData }, postProcess)
       .then(res => {
         if (res.err) {
           notificationPopup(res.msg, "error")
@@ -136,23 +131,25 @@ const Datatable = ({ ids,postProcess }) => {
       })
     toggleBoilForm();
   }
-
-  const downloadPdf = async (data,to) => {
+  const downloadPdf = async (data, to) => {
     const pdf = new jsPDF('l');
     pdf.setFont("Calibri", "bold");
     pdf.setTextColor(14, 3, 64);
-    const processName = (postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_"," ")
-    await generateIssuePdf(pdf,{data,to,kapanId,cutId,process : processName});
+    const processName = (postProcess ? POST_PROCESS_TYPES[process] : process).replaceAll("_", " ")
+    let kapanWgt = await Kapan.getKapanByID(kapanId)
+    kapanWgt =  kapanWgt.data[0].weight
+    console.log("Kapan Weight",kapanWgt)
+    await generateIssuePdf(pdf, { data, to, kapanWgt, cutId, process: processName });
     pdf.save(`issuePacketsTo${to.name.split('-')[1]}.pdf`);
   };
 
   const handleSubmitIssueForm = (e, packets, dlt = false) => {
-    console.log("Packets : ",packets)
+    console.log("Packets : ", packets)
     packets.packets.length && packets.packets.forEach(packet => {
-      Cart.editPacketField(kapanId, cutId, process, packet.id, "issue", { issue: packets.user },postProcess)
+      Cart.editPacketField(kapanId, cutId, process, packet.id, "issue", { issue: packets.user }, postProcess)
         .then(res => {
           if (res.err) {
-            notificationPopup(res.msg,"error")
+            notificationPopup(res.msg, "error")
             console.log("Error", res)
           }
           else {
@@ -161,42 +158,42 @@ const Datatable = ({ ids,postProcess }) => {
         })
     })
     toggleISForm()
-    downloadPdf(packets.packets,{name : packets.user,number : packets.number})
+    downloadPdf(packets.packets, { name: packets.user, number: packets.number })
   }
 
-  async function printPackets(data){
+  async function printPackets(data) {
     const pdf = new jsPDF('l', 'mm', [400, 200]);
     pdf.setFont("Calibri", "bold");
     pdf.setFontSize(14);
-    pdf.setTextColor(14, 3, 64);    
-    const processName = (postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_"," ")
-    data = data.map((ele)=>{
-        ele.url = `${config.FRONTEND_DOMAIN}/${postProcess?"PPcart":"cart"}/${kapanId}-${cutId}-${process}`
-        return ele;
+    pdf.setTextColor(14, 3, 64);
+    const processName = (postProcess ? POST_PROCESS_TYPES[process] : process).replaceAll("_", " ")
+    data = data.map((ele) => {
+      ele.url = `${config.FRONTEND_DOMAIN}/${postProcess ? "PPcart" : "cart"}/${kapanId}-${cutId}-${process}`
+      return ele;
     })
-    await generatePrintPdf(pdf,{data,kapanId,cutId,process : processName});
-    pdf.save(`printPackets_${process}.pdf`);
+    await generatePrintPdf(pdf, { data, kapanId, cutId, process: processName });
+    pdf.save(`printPackets_${(postProcess ? POST_PROCESS_TYPES[process] : process).replaceAll("_", " ")}.pdf`);
     setSelectedRowIds(new Set())
   }
 
   const handleUnSubmitIssueForm = (e, id) => {
-    Cart.editPacketField(kapanId, cutId, process, id, "issue", { issue: null },postProcess)
+    Cart.editPacketField(kapanId, cutId, process, id, "issue", { issue: null }, postProcess)
       .then(res => {
         if (res.err) {
           // notificationPopup(errors.UPDATE_ERROR,"error")
           console.log("Error", res.err)
           notificationPopup(errors.UPDATE_ERROR, "error")
 
-          
+
         }
         else {
           toggleIssuedPacketForm()
-          handleSubmitRTForm(null,{},id,true)
-          .then(res => {
-            if(!res.err){
-              notificationPopup(success.UPDATE_SUCCESS, "success")
-            }
-          })
+          handleSubmitRTForm(null, {}, id, true)
+            .then(res => {
+              if (!res.err) {
+                notificationPopup(success.UPDATE_SUCCESS, "success")
+              }
+            })
 
           setSelectedRowIds(new Set())
         }
@@ -207,9 +204,9 @@ const Datatable = ({ ids,postProcess }) => {
     const res = Array.from(ids).length != 0 && Array.from(ids).map((rowId) => data.find((row) => row.id === rowId));
     return res
   }
-  
+
   useEffect(() => {
-    Cart.getPackets(parseInt(kapanId), parseInt(cutId), process,postProcess)
+    Cart.getPackets(parseInt(kapanId), parseInt(cutId), process, postProcess)
       .then(res => {
         if (!res.err) {
           setData(res.data[0].packets)
@@ -223,34 +220,32 @@ const Datatable = ({ ids,postProcess }) => {
       })
   }, [ids, RTFormVisibility, IssueFormVisibility, IssuedPacketVisibility, BoilFormVisibility])
 
-  useEffect(()=>{
-    Kapan.getKapanByID(kapanId)
-    .then(res => {
-        setLock({status : res.data[0].lock.status})
-    })
-    .catch(err => {
-      console.log("Error in fetching Lock Field of kapan : ",err)
-    })
-  },[])
+  useEffect(() => {
+    Kapan.getKapanByID(kapanId, postProcess)
+      .then(res => {
+        setLock({ status: res.data[0].lock.status })
+      })
+      .catch(err => {
+        console.log("Error in fetching Lock Field of kapan : ", err)
+      })
+  }, [])
 
-  useEffect(()=>{
-    const timerId = setInterval(()=>{
-        Kapan.getKapanByID(kapanId)
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      Kapan.getKapanByID(kapanId, postProcess)
         .then(res => {
-            setLock({status : res.data[0].lock.status})
-            if(res.data[0].lock.status){
-                  console.log("Locked!!")
-                  clearInterval(timerId)
-            }
+          setLock({ status: res.data[0].lock.status })
+          if (res.data[0].lock.status) {
+            console.log("Locked!!")
+            clearInterval(timerId)
+          }
         })
         .catch(err => {
           clearInterval(timerId)
-          console.log("Error in fetching Lock Field of kapan : ",err)
+          console.log("Error in fetching Lock Field of kapan : ", err)
         })
-    },config.UnlockTime)
-  },[])
-
- 
+    }, config.UnlockTime)
+  }, [])
 
   const userColumns1 = [
     { field: "id", headerName: "P No.", width: 70 },
@@ -297,11 +292,11 @@ const Datatable = ({ ids,postProcess }) => {
       field: "size",
       headerName: "Size",
       width: 100
-  }]
+    }]
 
   let inBTWColumns = []
-  
-  if(!postProcess){
+
+  if (!postProcess) {
     switch (process) {
       case PRE_PROCESS_TYPES.POLISH_LOTING:
         inBTWColumns = [
@@ -309,14 +304,6 @@ const Datatable = ({ ids,postProcess }) => {
             field: "purityno",
             headerName: "Purity No.",
             width: 100,
-          },
-          {
-            field: "boilWeight",
-            headerName: "LaserWgt",
-            width: 100,
-            renderCell: (params) => {
-              return params.row.boil?.weight;
-            }
           },
           {
             field: "boilPieces",
@@ -327,19 +314,28 @@ const Datatable = ({ ids,postProcess }) => {
             }
           },
           {
+            field: "boilWeight",
+            headerName: "LaserWgt",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.boil?.weight;
+            }
+          },
+
+          {
             field: "boil",
             headerName: "Laser",
             width: 100,
             renderCell: (params) => {
               if (!params.row.boil) {
                 return (
-                  <button className='return cancel' onClick={(e) => toggleBoilForm(e,params.row.subPacketsDetails.isAllReturn,params.row.boil)}>
+                  <button className='return cancel' onClick={(e) => toggleBoilForm(e, params.row.subPacketsDetails.isAllReturn, params.row.boil)}>
                     <div style={{ padding: '5px' }} ><CancelIcon /></div>
                   </button>
                 )
               }
               else {
-                return (<button className='return check' onClick={(e) => toggleBoilForm(e,params.row.subPacketsDetails.isAllReturn,params.row.boil)}>
+                return (<button className='return check' onClick={(e) => toggleBoilForm(e, params.row.subPacketsDetails.isAllReturn, params.row.boil)}>
                   {<div ><CheckCircleIcon />
                   </div>}
                 </button>)
@@ -353,15 +349,29 @@ const Datatable = ({ ids,postProcess }) => {
             renderCell: (params) => {
               return params.row.charni?.value;
             }
+          },{
+            field: "charni2",
+            headerName: "Charni 2",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.charni2?.value;
+            }
+          },{
+            field: "charni3",
+            headerName: "Charni 3",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.charni3?.value;
+            }
           },
           {
             field: "color",
             headerName: "Color1/Pcs",
             width: 150,
             renderCell: (params) => {
-              return params.row.color?
-              <span>{params.row.color?.value} / {params.row.colorPieces1}</span>:
-              'Not Available';
+              return params.row.color ?
+                <span>{params.row.color?.value} / {params.row.colorPieces1}</span> :
+                'Not Available';
             }
           },
           {
@@ -369,9 +379,9 @@ const Datatable = ({ ids,postProcess }) => {
             headerName: "Color2/Pcs",
             width: 150,
             renderCell: (params) => {
-              return params.row.color2?
-              <span>{params.row.color2?.value} / {params.row.colorPieces2}</span>:
-              'Not Available';
+              return params.row.color2 ?
+                <span>{params.row.color2?.value} / {params.row.colorPieces2}</span> :
+                'Not Available';
             }
           },
           {
@@ -379,9 +389,9 @@ const Datatable = ({ ids,postProcess }) => {
             headerName: "Color3/Pcs",
             width: 150,
             renderCell: (params) => {
-              return params.row.color3?
-              <span>{params.row.color3?.value} / {params.row.colorPieces3}</span>:
-              'Not Available';
+              return params.row.color3 ?
+                <span>{params.row.color3?.value} / {params.row.colorPieces3}</span> :
+                'Not Available';
             }
           },
           {
@@ -391,7 +401,7 @@ const Datatable = ({ ids,postProcess }) => {
             renderCell: (params) => {
               return params.row.cutting?.value;
             }
-  
+
           }
         ];
         break;
@@ -404,15 +414,49 @@ const Datatable = ({ ids,postProcess }) => {
             renderCell: (params) => {
               return params.row.charni?.value;
             }
+          },{
+            field: "charni2",
+            headerName: "Charni 2",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.charni2?.value;
+            }
+          },{
+            field: "charni3",
+            headerName: "Charni 3",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.charni3?.value;
+            }
           },
           {
             field: "color",
-            headerName: "Color/Pcs",
+            headerName: "Color1/Pcs",
             width: 150,
             renderCell: (params) => {
-              return params.row.color?
-              <span>{params.row.color?.value} / {params.row.colorPieces1}</span>:
-              'Not Available';
+              return params.row.color ?
+                <span>{params.row.color?.value} / {params.row.colorPieces1}</span> :
+                'Not Available';
+            }
+          },
+          {
+            field: "color2",
+            headerName: "Color2/Pcs",
+            width: 150,
+            renderCell: (params) => {
+              return params.row.color2 ?
+                <span>{params.row.color2?.value} / {params.row.colorPieces2}</span> :
+                'Not Available';
+            }
+          },
+          {
+            field: "color3",
+            headerName: "Color3/Pcs",
+            width: 150,
+            renderCell: (params) => {
+              return params.row.color3 ?
+                <span>{params.row.color3?.value} / {params.row.colorPieces3}</span> :
+                'Not Available';
             }
           },
         ]
@@ -426,20 +470,26 @@ const Datatable = ({ ids,postProcess }) => {
             renderCell: (params) => {
               return params.row.charni?.value;
             }
+          },{
+            field: "charni2",
+            headerName: "Charni 2",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.charni2?.value;
+            }
+          },{
+            field: "charni3",
+            headerName: "Charni 3",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.charni3?.value;
+            }
           }
         ]
         break;
-      
+
       case PRE_PROCESS_TYPES.LASER_LOTING:
         inBTWColumns = [
-          {
-            field: "subReturnWeight",
-            headerName: "SubRWgt",
-            width: 100,
-            renderCell: (params) => {
-              return params.row.subPacketsDetails?.subReturnWeight;
-            }
-          },
           {
             field: "subReturnPieces",
             headerName: "SubRPcs",
@@ -449,11 +499,11 @@ const Datatable = ({ ids,postProcess }) => {
             }
           },
           {
-            field: "boilWeight",
-            headerName: "BoilWgt",
+            field: "subReturnWeight",
+            headerName: "SubRWgt",
             width: 100,
             renderCell: (params) => {
-              return params.row.boil?.weight;
+              return params.row.subPacketsDetails?.subReturnWeight;
             }
           },
           {
@@ -465,19 +515,28 @@ const Datatable = ({ ids,postProcess }) => {
             }
           },
           {
+            field: "boilWeight",
+            headerName: "BoilWgt",
+            width: 100,
+            renderCell: (params) => {
+              return params.row.boil?.weight;
+            }
+          },
+
+          {
             field: "boil",
             headerName: "Boil",
             width: 100,
             renderCell: (params) => {
               if (!params.row.boil) {
                 return (
-                  <button className='return cancel' onClick={(e) => toggleBoilForm(e,params.row.subPacketsDetails.isAllReturn,params.row.boil)}>
+                  <button className='return cancel' onClick={(e) => toggleBoilForm(e, params.row.subPacketsDetails.isAllReturn, params.row.boil)}>
                     <div style={{ padding: '5px' }} ><CancelIcon /></div>
                   </button>
                 )
               }
               else {
-                return (<button className='return check' onClick={(e) => toggleBoilForm(e,params.row.subPacketsDetails.isAllReturn,params.row.boil)}>
+                return (<button className='return check' onClick={(e) => toggleBoilForm(e, params.row.subPacketsDetails.isAllReturn, params.row.boil)}>
                   {<div style={{ display: "flex", flexDirection: "row", padding: '5px', columnGap: '5px', alignItems: 'centre' }}><CheckCircleIcon />
                     <h3 style={{ alignSelf: 'center' }}>{params.row.issue?.split("-")[1]}</h3></div>}
                 </button>)
@@ -488,7 +547,7 @@ const Datatable = ({ ids,postProcess }) => {
         break;
     }
   }
-  
+
   const userColumns2 = [{
     field: "returnPieces",
     headerName: "RPcs",
@@ -528,43 +587,43 @@ const Datatable = ({ ids,postProcess }) => {
     renderCell: (params) => {
       if (!params.row.return?.returnWeight) {
         return (
-          <button className='return cancel' onClick={(e) => toggleRTForm(e,params.row.issue, params.row.boil, params.row.return?.returnWeight)}>
+          <button className='return cancel' onClick={(e) => toggleRTForm(e, params.row.issue, params.row.boil, params.row.return?.returnWeight)}>
             <CancelIcon />
           </button>
         )
       }
       else {
         return (
-          <button className='return check' onClick={(e) => toggleRTForm(e,params.row.issue, params.row.boil, params.row.return?.returnWeight)}>
+          <button className='return check' onClick={(e) => toggleRTForm(e, params.row.issue, params.row.boil, params.row.return?.returnWeight)}>
             <CheckCircleIcon />
           </button>)
       }
     }
   },
   ];
-  
-  function filterFields(columns){
-      const p = PRE_PROCESS_TYPES
-      if([p.ORIGINAL_RC,p.POLISHED,p.RC,p.REJECTION].includes(process)){
-          columns.filter(ele => {
-            if(["returnPieces","returnWeight","loss","return","issued"].includes(ele.field)){
-              return false
-            }
-            return true
-          })
-          console.log("c",columns)
-          return columns.map(ele => {
-              console.log("Dd",ele)
-              ele.width = (ele.width || 150) + 60
-              return ele
-          })
-      }
-      return columns
+
+  function filterFields(columns) {
+    const p = PRE_PROCESS_TYPES
+    if ([p.ORIGINAL_RC, p.POLISHED, p.RC, p.REJECTION].includes(process)) {
+      columns.filter(ele => {
+        if (["returnPieces", "returnWeight", "loss", "return", "issued"].includes(ele.field)) {
+          return false
+        }
+        return true
+      })
+      console.log("c", columns)
+      return columns.map(ele => {
+        console.log("Dd", ele)
+        ele.width = (ele.width || 150) + 60
+        return ele
+      })
+    }
+    return columns
   }
-  console.log(postProcess,lock,process)
+  console.log(postProcess, lock, process)
 
   const actionColumn = [
-    ((postProcess && Main.lockForStaff(user,lock)) || (process != PRE_PROCESS_TYPES.LASER_LOTING && (Main.lockForStaff(user,lock))))? {} : {
+    ((postProcess && Main.lockForStaff(user, lock)) || (process != PRE_PROCESS_TYPES.LASER_LOTING && (Main.lockForStaff(user, lock)))) ? {} : {
       field: "action",
       headerName: "Action",
       width: 200,
@@ -578,14 +637,14 @@ const Datatable = ({ ids,postProcess }) => {
               View
             </div> : ""}
 
-            {!(Main.lockForStaff(user,lock)) && <div
+            {!(Main.lockForStaff(user, lock)) && <div
               className="editButton"
               onClick={() => handleEdit(params.row.id)}
             >
               Edit
             </div>}
 
-            {!(Main.lockForStaff(user,lock)) && <div
+            {!(Main.lockForStaff(user, lock)) && <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
             >
@@ -641,37 +700,38 @@ const Datatable = ({ ids,postProcess }) => {
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Packets<h5>{(postProcess?POST_PROCESS_TYPES[process]:process).replaceAll("_", " ")}</h5>
+        Packets<h5>{(postProcess ? POST_PROCESS_TYPES[process] : process).replaceAll("_", " ")}</h5>
         <div>
-          {!Main.isStaff(user) && <button onClick={(e) => printPackets(selectedEntries(selectedRowIds))} className="link" style={{ alignSelf: 'right' ,marginRight : '25px',width : '70px'}}>
+          {!Main.isStaff(user) && <button onClick={(e) => printPackets(selectedEntries(selectedRowIds))} className="link" style={{ alignSelf: 'right', marginRight: '25px', width: '70px' }}>
             Print
           </button>}
-          {process != PRE_PROCESS_TYPES.LASER_LOTING && !Main.isStaff(user)?<button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '25px' }}>
+          {process != PRE_PROCESS_TYPES.LASER_LOTING && !Main.isStaff(user) ? <button onClick={(e) => toggleISForm()} className="link" style={{ marginRight: '25px' }}>
             Issue Packets
-          </button>:""}
-          <button onClick={() => navigate(`/${postProcess?"PP":""}Cart/New/${ids}`)} className="link" style={{ alignSelf: 'right' }}>
+          </button> : ""}
+          <button onClick={() => navigate(`/${postProcess ? "PP" : ""}Cart/New/${ids}`)} className="link" style={{ alignSelf: 'right' }}>
             Add New
           </button>
         </div>
       </div>
+
       {RTFormVisibility &&
-        <ReturnForm 
-          headerDetails={
+        <ReturnForm
+          headerDetails =
+          {
             {
-              weight: process == PRE_PROCESS_TYPES.LASER_LOTING?rowDetails.boil?.weight || 0:rowDetails.weight, 
-              pieces: process == PRE_PROCESS_TYPES.LASER_LOTING?rowDetails.boil?.pieces || 0:rowDetails.pieces, 
-              WeightLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Weight":"Weight" ,
-              PiecesLable : process == PRE_PROCESS_TYPES.LASER_LOTING?"Boil Pieces":"Pieces" ,
-              packetID: rowDetails.packetId, 
-              id: rowDetails.id 
+              weight: process == PRE_PROCESS_TYPES.LASER_LOTING ? rowDetails.boil?.weight || 0 : rowDetails.weight,
+              pieces: process == PRE_PROCESS_TYPES.LASER_LOTING ? rowDetails.boil?.pieces || 0 : rowDetails.pieces,
+              WeightLable: process == PRE_PROCESS_TYPES.LASER_LOTING ? "Boil Weight" : "Weight",
+              PiecesLable: process == PRE_PROCESS_TYPES.LASER_LOTING ? "Boil Pieces" : "Pieces",
+              packetID: rowDetails.packetId,
+              id: rowDetails.id
             }
           }
-          weights={getWeightsForForm(postProcess?returnWeightsPP[process]:returnWeights[process])} 
-          onClose={toggleRTForm} 
-          onSubmission={handleSubmitRTForm} 
+          weights={getWeightsForForm(postProcess ? returnWeightsPP[process] : returnWeights[process])}
+          onClose={toggleRTForm}
+          onSubmission={handleSubmitRTForm}
           postProcess={postProcess}
-          />}
-
+        />}
 
       {BoilFormVisibility && <BoilReturnForm headerDetails={
         {
@@ -683,11 +743,10 @@ const Datatable = ({ ids,postProcess }) => {
       }
         weights={rowDetails.boil} onClose={toggleBoilForm} onSubmission={handleSubmitBoilForm} />}
 
-
       {IssueFormVisibility &&
-        <IssueForm headerDetails={{ kapanId: kapanId, cutId: cutId }} PacketsData={selectedEntries(selectedRowIds)} onClose={toggleISForm} onSubmit={handleSubmitIssueForm} postProcess={postProcess}/>}
+        <IssueForm headerDetails={{ kapanId: kapanId, cutId: cutId }} PacketsData={selectedEntries(selectedRowIds)} onClose={toggleISForm} onSubmit={handleSubmitIssueForm} postProcess={postProcess} />}
       {IssuedPacketVisibility && rowDetails.issue &&
-        <IssuedPacketForm headerDetails={{ kapanId: kapanId, cutId: cutId, id: rowDetails.id }} StaffData={rowDetails.issue} onClose={toggleIssuedPacketForm} onSubmit={handleUnSubmitIssueForm} postProcess={postProcess}/>}
+        <IssuedPacketForm headerDetails={{ kapanId: kapanId, cutId: cutId, id: rowDetails.id }} StaffData={rowDetails.issue} onClose={toggleIssuedPacketForm} onSubmit={handleUnSubmitIssueForm} postProcess={postProcess} />}
 
       <DataGrid
         className="datagrid"

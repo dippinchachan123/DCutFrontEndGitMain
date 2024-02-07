@@ -65,6 +65,8 @@ export class Staff extends Main {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addStaff`
         try {
             const res = await axios.post(api, body)
@@ -91,6 +93,8 @@ export class Staff extends Main {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateStaff?id=${id}`
         return axios.post(api, body)
             .then(res => res.data)
@@ -119,7 +123,7 @@ export class Staff extends Main {
             return
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteStaff?id=${id}`
-        return axios.post(api)
+        return axios.post(api,{user : Main.getCurrentUser()})
             .then(res => res.data)
             .then(res => {
                 return res.err || res.notFound ? {

@@ -16,7 +16,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { config } from "../../../config";
 
-const Datatable = () => {
+const Datatable = ({postProcess}) => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [user] = useUser();
@@ -29,19 +29,22 @@ const Datatable = () => {
   })
 
   const handleDelete = (id) => {
-    Kapan.deleteKapanByID(id)
-      .then(res => {
-        if (res.err) {
-          notificationPopup(res.msg, "error")
-        }
-        else {
-          notificationPopup(res.msg, "success")
-          setData(data.filter((item) => item.id !== id));
-        }
-      })
-      .catch(err => {
-        notificationPopup(errors.DELETION_ERROR, "error")
-      })
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      Kapan.deleteKapanByID(id,postProcess)
+        .then(res => {
+          if (res.err) {
+            notificationPopup(res.msg, "error")
+          }
+          else {
+            notificationPopup(res.msg, "success")
+            setData(data.filter((item) => item.id !== id));
+          }
+        })
+        .catch(err => {
+          notificationPopup(errors.DELETION_ERROR, "error")
+        })
+    }
   };
 
   const handleLock = (id, lock) => {
@@ -57,7 +60,7 @@ const Datatable = () => {
           status: !lock.status,
           lockedBy: user
         }
-      })
+      },postProcess)
       .then(res => {
         if (res.err) {
           console.log("error : ", res.data)
@@ -74,7 +77,7 @@ const Datatable = () => {
           // Locking in frontEnd!!
           if (lockStatus) {
             const timerId = setInterval(() => {
-              Kapan.getKapanByID(id)
+              Kapan.getKapanByID(id,postProcess)
               .then(res => {
                 if(!res.err){
                   if(res.data[0].lock.status){
@@ -103,11 +106,11 @@ const Datatable = () => {
 
 
   const handleView = (id) => {
-    navigate(`/kapans/${id}`)
+    navigate(postProcess?`/PPcuts/${id}-1`:`/kapans/${id}`)
   };
 
   const handleEdit = (id) => {
-    navigate(`/kapans/edit/${id}`)
+    navigate(`/${postProcess?"PP":""}kapans/edit/${id}`)
   };
 
   const iterateKapans = async (data) => {
@@ -125,7 +128,7 @@ const Datatable = () => {
   }
 
   useEffect(() => {
-    Kapan.getKapans()
+    Kapan.getKapans(postProcess)
       .then(res => {
         if (!res.err) {
           setData(res.data)
@@ -135,7 +138,7 @@ const Datatable = () => {
           notificationPopup(res.msg, "error")
         }
       })
-  }, [reload])
+  }, [reload,postProcess])
 
   const getTableData = (data) => {
     // Create a deep copy of the data array to avoid modifying the original array
@@ -194,12 +197,12 @@ const Datatable = () => {
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Kapans
-        {<Link to={`/kapans/new` + ""} className="link">
+        {postProcess?"Post Process":"Kapans"}
+        {<Link to={`/${postProcess?"PP":""}kapans/new` + ""} className="link">
           Add New
         </Link>}
       </div>
-      <DataTableInfoBox infoData={[{ label: "Weight", value: totalState.totalWeight }, { label: "Pieces", value: totalState.totalPieces }]} />
+      <DataTableInfoBox infoData={[{ label: "Weight", value: totalState.totalWeight.toFixed(2) }, { label: "Pieces", value: totalState.totalPieces.toFixed(2) }]} />
       <DataGrid
         className="datagrid"
         rows={getTableData(data)}

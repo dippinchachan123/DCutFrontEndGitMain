@@ -13,7 +13,7 @@ import {  useUser } from "../../../context/kapanContext";
 import DataTableInfoBox from "../../../components/Shared/DataTableInfo";
 
 
-const Edit  = () => {
+const Edit  = ({postProcess}) => {
     const [data,setData] = useState({status : "PENDING",weight : 0});
     const {id} = useParams();
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Edit  = () => {
 
     const [user,setUser] = useUser();
     
-    const title = "Edit New Kapan"
+    const title = postProcess?"Edit PostProcess":"Edit Kapan"
 
     const inputs = [
         {
@@ -68,14 +68,14 @@ const Edit  = () => {
             notificationPopup(val.msg,"error")
             return
         }
-        Kapan.editKapanByID(id,data)
+        Kapan.editKapanByID(id,data,postProcess)
         .then(res => {
             if(res.err){
             notificationPopup(res.msg,"error")
             }
             else{
             notificationPopup(res.msg,"success")
-            navigate('/kapans');
+            navigate(`/${postProcess?"PP":""}kapans`);
             }
         })
         .catch(err => {
@@ -83,7 +83,6 @@ const Edit  = () => {
         })
     }
     function validate(data){
-
         console.log("Validating Data : ",data)
         if(!data.weight){
             return {status : false,msg : "Invalid Weight!!"}
@@ -91,7 +90,7 @@ const Edit  = () => {
         if(!data.pieces){
             return {status : false,msg : "Invalid Pieces!!"}
         }
-        if(data.weight - OriginalData.cutsWeight < 0){
+        if(!postProcess && ( data.weight - OriginalData.cutsWeight < 0)){
             return {status : false,msg : `Weight Limit deficit by ${-(data.weight - OriginalData.cutsWeight)}!!`}
         }
         return {status : true,msg : ""}
@@ -117,7 +116,7 @@ const Edit  = () => {
 
 
     useEffect(() => {
-        Kapan.getKapanByID(id)
+        Kapan.getKapanByID(id,postProcess)
         .then(res => {
             if(res.err){
                 notificationPopup(res.msg,"error")

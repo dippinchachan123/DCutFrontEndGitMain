@@ -35,8 +35,8 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="top">
         <Link to="/home" style={{ textDecoration: "none" }}>
-          <img className={"Logo"} src={Logo} width= '255px' height={'100px'} style={{padding : "5px"}}/>
-          {/* <span className="logo">SBG</span> */}
+          {/* <img className={"Logo"} src={Logo} width= '255px' height={'100px'} style={{padding : "5px"}}/> */}
+          <span className="logo">SBG</span>
         </Link>
       </div>
       <hr />
@@ -55,7 +55,7 @@ const Sidebar = () => {
                 <span>Processes</span>
               </li>
             </Link>}
-            {!(Main.isStaff(user) && Main.isPreProcess(user)) && <Link to="/PPkapans/1" style={{ textDecoration: "none" }}>
+            {!(Main.isStaff(user) && Main.isPreProcess(user)) && <Link to="/PPkapans" style={{ textDecoration: "none" }}>
               <li>
                 <ConstructionIcon className="icon" />
                 <span>Post Processes</span>

@@ -61,6 +61,7 @@ export class Cart extends Main{
     }
 
     static addPacket = async (kapanId,id,process,body,postProcess = false) => {
+        //Add user to request.body
         if(await Main.authenticate()){
             return
         }
@@ -93,8 +94,9 @@ export class Cart extends Main{
         if(await Main.authenticate()){
             return
         }
+
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -115,7 +117,7 @@ export class Cart extends Main{
 
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deletePacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`
         try {
-            const res = await axios.post(api);
+            const res = await axios.post(api,{user : await Main.getCurrentUser()});
             const res_1 = res.data;
             return res_1.err || res_1.notFound ? {
                 err: true,
@@ -142,7 +144,7 @@ export class Cart extends Main{
         }
         
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -161,7 +163,6 @@ export class Cart extends Main{
         }
 
         data.user = await Main.getCurrentUser();
-        console.log("Data Here : ",data)
         
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updatePacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}`
         try {
@@ -191,7 +192,7 @@ export class Cart extends Main{
             return
         }
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -322,7 +323,7 @@ export class Cart extends Main{
             return
         }
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -342,7 +343,7 @@ export class Cart extends Main{
         
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteSPacket?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&packetId=${packetId}`
         try {
-            const res = await axios.post(api);
+            const res = await axios.post(api,{user : await Main.getCurrentUser()});
             const res_1 = res.data;
             return res_1.err || res_1.notFound ? {
                 err: true,
@@ -368,7 +369,7 @@ export class Cart extends Main{
             return
         }
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -416,7 +417,7 @@ export class Cart extends Main{
             return
         }
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -435,8 +436,6 @@ export class Cart extends Main{
         }
 
         data.user = await Main.getCurrentUser();
-
-        console.log("req",data)
 
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateSPacketField?cutId=${cutId}&kapanId=${kapanId}&process=${process}&id=${id}&packetId=${packetId}&field=${field}`
         try {
@@ -491,9 +490,10 @@ export class Cart extends Main{
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
 
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -536,9 +536,10 @@ export class Cart extends Main{
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
 
         if(await Main.isStaff()){
-            const kapan = await Kapan.getKapanByID(kapanId);
+            const kapan = await Kapan.getKapanByID(kapanId,postProcess);
             if(!kapan.err){
                 if(kapan.data[0].lock.status){
                     return {
@@ -577,5 +578,4 @@ export class Cart extends Main{
             }
         }
     }
-
 }

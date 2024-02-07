@@ -53,19 +53,22 @@ const Datatable = ({ ids }) => {
   }
 
   const handleDelete = (id) => {
-    Cart.deleteSPacket(kapanId, cutId, process, packetId, id)
-      .then(res => {
-        if (res.err) {
-          notificationPopup(res.msg, "error")
-        }
-        else {
-          notificationPopup(res.msg, "success")
-          setData(data.filter((item) => item.id !== id));
-        }
-      })
-      .catch(err => {
-        notificationPopup(errors.DELETION_ERROR, "error")
-      })
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      Cart.deleteSPacket(kapanId, cutId, process, packetId, id)
+        .then(res => {
+          if (res.err) {
+            notificationPopup(res.msg, "error")
+          }
+          else {
+            notificationPopup(res.msg, "success")
+            setData(data.filter((item) => item.id !== id));
+          }
+        })
+        .catch(err => {
+          notificationPopup(errors.DELETION_ERROR, "error")
+        })
+    }
   };
 
   const downloadPdf = async (data,to) => {

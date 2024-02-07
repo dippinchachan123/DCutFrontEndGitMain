@@ -95,6 +95,8 @@ export class Cut extends Main {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}addCut?id=${id}`
         try {
             body.carts = Cut.initCarts(body)
@@ -123,6 +125,8 @@ export class Cut extends Main {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}updateCut?id=${id}&kapanId=${kapanId}`
         try {
             const res = await axios.post(api, body);
@@ -151,7 +155,7 @@ export class Cut extends Main {
         }
         const api = `${Main.DomainName}/api/${postProcess?"PP":""}deleteCut?id=${id}&kapanId=${kapanId}`
         try {
-            const res = await axios.post(api);
+            const res = await axios.post(api, {user : await Main.getCurrentUser()});
             const res_1 = res.data;
             return res_1.err || res_1.notFound ? {
                 err: true,
@@ -169,23 +173,5 @@ export class Cut extends Main {
                 msg: errors.DELETION_ERROR
             };
         }
-    }
-
-    static async weightTransfer(kapanId, cutId, weight_a, weight_b, weight) {
-        if(await Main.authenticate()){
-            return
-        }
-        // const res = Cut.getCutByID(kapan, cut.id)
-        // console.log("Cut : ", res)
-        // if (!res.err) {
-        //     const cut = res.data;
-        //     cut.carts[weight_a].pending.weight = cut.carts[weight_a].pending.weight - weight
-        //     cut.carts[weight_b].pending.weight = cut.carts[weight_b].pending.weight + weight
-        //     const updatedKapan = Cut.editCutByID(kapan, cut.id, cut)
-        //     if (!updatedKapan.err) {
-        //         return Kapan.editKapanByID(updatedKapan.data.id, updatedKapan.data)
-        //     }
-        // }
-        // return res
     }
 }

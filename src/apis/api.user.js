@@ -66,6 +66,8 @@ export class User extends Main {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/addUser`
         try {
             const res = await axios.post(api, body)
@@ -92,6 +94,8 @@ export class User extends Main {
         if(await Main.authenticate()){
             return
         }
+        body.user = await Main.getCurrentUser();
+
         const api = `${Main.DomainName}/api/updateUser?id=${id}`
         return axios.post(api, body)
             .then(res => res.data)
@@ -121,7 +125,7 @@ export class User extends Main {
         }
         
         const api = `${Main.DomainName}/api/deleteUser?id=${id}`
-        return axios.post(api)
+        return axios.post(api,{user : Main.getCurrentUser()})
             .then(res => res.data)
             .then(res => {
                 return res.err || res.notFound ? {

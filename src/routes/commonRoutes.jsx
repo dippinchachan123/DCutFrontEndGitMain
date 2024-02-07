@@ -117,11 +117,21 @@ export const GlobalRoute = () => {
                     />
                 </Route>
                 <Route path="PPkapans">
+                    <Route index element={
+                        <KapanMainPage postProcess={true}/>
+                    } />
                     <Route path=":id" element={
                         <KapanOpenView postProcess={true}/>
                     } />
+                    <Route
+                        path="new"
+                        element={<NewkapanForm postProcess={true}/>}
+                    />
+                    <Route
+                        path="edit/:id"
+                        element={<EditkapanForm postProcess={true}/>}
+                    />
                 </Route>
-
                 <Route path="PPcuts">
                     <Route path=":id" element={
                         <CutOpenView postProcess={true}/>
@@ -135,7 +145,6 @@ export const GlobalRoute = () => {
                         element={<EditCutForm postProcess={true}/>}
                     />
                 </Route>
-
                 <Route path="PPcart">
                     <Route path=":id" element={<CartOpenView postProcess={true}/>} />
                     <Route path="New/:id" element = {<NewCartForm postProcess={true}/>}/>
@@ -144,7 +153,6 @@ export const GlobalRoute = () => {
                         element={<EditCartForm postProcess={true}/>}
                     />
                 </Route>
-
                 <Route path="PPstaffs">
                     <Route index element={
                         <StaffMainPage postProcess={true}/>

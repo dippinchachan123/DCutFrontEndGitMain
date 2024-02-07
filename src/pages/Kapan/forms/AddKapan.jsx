@@ -12,14 +12,14 @@ import { Kapan } from "../../../apis/api.kapan";
 import {  useUser } from "../../../context/kapanContext";
 
 
-const New  = () => {
+const New  = ({postProcess}) => {
     const [data,setData] = useState({status : "PENDING",weight : 0});
     const navigate = useNavigate();
 
     const [user,setUser] = useUser();
     
 
-    const title = "Add New Kapan"
+    const title = postProcess?"Add New PostProcess":"Add New Kapan"
 
     const inputs = [
         {
@@ -60,14 +60,14 @@ const New  = () => {
             return
         }
         
-        Kapan.addKapan(data)
+        Kapan.addKapan(data,postProcess)
         .then(res => {
             if(res.err){
             notificationPopup(res.msg,"error")
             }
             else{
             notificationPopup(res.msg,"success")
-            navigate('/kapans');
+            navigate(`/${postProcess?"PP":""}kapans`);
             }
         })
         .catch(err => {
@@ -76,7 +76,6 @@ const New  = () => {
     }
 
     function validate(data){
-        console.log("Validating Data : ",data)
         if(!data.weight){
             return {status : false,msg : "Invalid Weight!!"}
         }
