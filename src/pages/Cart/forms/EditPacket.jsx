@@ -242,7 +242,8 @@ const Edit = ({ postProcess }) => {
     }
 
     useEffect(() => {
-        Fields.getFields(postProcess)
+        if(!postProcess){
+            Fields.getFields(postProcess)
             .then(res => {
                 if (!res.err) {
                     console.log("Data : ", res)
@@ -258,6 +259,8 @@ const Edit = ({ postProcess }) => {
             .catch(err => {
                 notificationPopup(err, "error")
             })
+        }
+        
     }, [])
 
 

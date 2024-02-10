@@ -6,7 +6,7 @@ import React from 'react';
 import { GlobalRoute } from "./routes/commonRoutes";
 import { UserProvider } from "./context/kapanContext";
 import MyPdfComponent from "./components/PDFs/PdfComponent";
-
+import './app.scss';
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);

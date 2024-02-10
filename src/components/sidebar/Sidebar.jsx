@@ -19,7 +19,6 @@ import { useContext } from "react";
 import { grey } from "@mui/material/colors";
 import { Main } from "../../apis/Main";
 import { useUser } from "../../context/kapanContext";
-import Logo from '../../LOGO.jpeg'
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
@@ -34,12 +33,19 @@ const Sidebar = () => {
   return user && (
     <div className="sidebar">
       <div className="top">
-        <Link to="/home" style={{ textDecoration: "none" }}>
-          {/* <img className={"Logo"} src={Logo} width= '255px' height={'100px'} style={{padding : "5px"}}/> */}
-          <span className="logo">SBG</span>
-        </Link>
+        <div className="item">
+            <img
+              src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              alt=""
+              className="avatar"
+            />
+        </div>
+        <div style={{display : "flex",flexDirection : "column",fontSize : 14,fontWeight : 900}}>
+          <div>{user.name?user.name:user.staff.label}</div>
+          <div>{user.number}</div>  
+        </div>
+
       </div>
-      <hr />
       <div className="center">
         <ul>
           <p className="title">MAIN</p>

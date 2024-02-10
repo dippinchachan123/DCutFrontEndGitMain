@@ -1,31 +1,58 @@
 .sidebar {
-  flex: 1;
-  border-right: 0.5px solid rgb(230, 227, 227);
+  flex: 0.7;
+  // border-right: 0.5px solid rgb(230, 227, 227);
   min-height: 100vh;
-  background-color: white;
+  background-color: #c5c4c4;
+  border-bottom-right-radius: 50px;
 
   .top {
-    height: 64px;
+    height: 80px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    background-color: #f1b35a;
+    padding-left: 10px;
 
     .logo {
       font-size: 45px;
       font-weight: bold;
       color: #6439ff;
     }
-  }
+    .item {
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+      position: relative;
 
-  hr {
-    height: 0;
-    border: 0.5px solid rgb(230, 227, 227);
+      .icon {
+        font-size: 40px;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      .counter {
+        width: 15px;
+        height: 15px;
+        background-color: red;
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+        position: absolute;
+        top: -5px;
+        right: -5px;
+      }
+    }
   }
 
   .center {
     padding-left: 10px;
-
-
 
     ul {
       list-style: none;
@@ -33,9 +60,9 @@
       padding: 0;
 
       .title {
-        font-size: 10px;
-        font-weight: bold;
-        color: #999;
+        font-size: 12px;
+        font-weight: 900;
+        color: #595959;
         margin-top: 15px;
         margin-bottom: 5px;
       }
@@ -44,8 +71,11 @@
         display: flex;
         align-items: center;
         padding: 5px;
+        margin: 8px;
         cursor: pointer;
-
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+        border: 1px solid blueviolet;
+        border-radius: 8px;
         &:hover {
           background-color: #ece8ff;
         }
@@ -60,9 +90,9 @@
         }
 
         span {
-          font-size: 13px;
-          font-weight: 600;
-          color: #888;
+          font-size: 14px;
+          font-weight: 900;
+          color: black;
           margin-left: 10px;
         }
       }

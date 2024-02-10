@@ -1,4 +1,5 @@
 import "./navbar.scss";
+import { Link, useNavigate } from "react-router-dom";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -7,6 +8,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import { DarkModeContext } from "../../context/darkModeContext";
+import Logo from '../../LOGO.jpeg'
 import { useContext, useState } from "react";
 
 const Navbar = () => {
@@ -24,7 +26,7 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="wrapper">
-        <div className="search">
+        {/* <div className="search">
           <input 
             type="text" 
             placeholder="Search..."  
@@ -34,7 +36,11 @@ const Navbar = () => {
             <SearchOutlinedIcon />
           </span>
           
-        </div>
+        </div> */}
+        <Link to="/home" style={{ textDecoration: "none" }}>
+          <img className={"Logo"} src={Logo} width= '255px' height={'100px'} style={{padding : "5px"}}/>
+          {/* <span className="logo">SBG</span> */}
+        </Link>
         <div className="items">
           {/* <div className="item">
             <LanguageOutlinedIcon className="icon" />
@@ -60,13 +66,13 @@ const Navbar = () => {
           <div className="item">
             <ListOutlinedIcon className="icon" />
           </div> */}
-          <div className="item">
+          {/* <div className="item">
             <img
               src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
               alt=""
               className="avatar"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

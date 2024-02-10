@@ -78,8 +78,9 @@
     }
 
     .title {
-      font-size: 16px;
-      color: lightgray;
+      font-size: 20px;
+      font-weight: 900;
+      color: grey;
       margin-bottom: 20px;
     }
 
@@ -89,6 +90,13 @@
       margin: 100px;
       align-items: center;
       justify-content: center;
+
+      .MuiTableRow-head{
+        background-color: #9a9a9a;
+      }
+      .MuiTableBody-root{
+        background-color: #ebebeb;
+      }
       
       .ProcessContainer{
         display: flex;
