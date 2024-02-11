@@ -72,7 +72,7 @@ const Datatable = () => {
     {
       field: "name",
       headerName: "User name",
-      width: 250,
+      width: 400,
       renderCell: (params) => {
         return (
           <div style={{display:'flex',flexDirection:'row',columnGap:'5px',alignItems:'center'}}>

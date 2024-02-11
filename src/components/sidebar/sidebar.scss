@@ -72,9 +72,10 @@
         align-items: center;
         padding: 5px;
         margin: 8px;
+        margin-left: -4px;
         cursor: pointer;
         box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-        border: 1px solid blueviolet;
+        border: 2px solid grey;
         border-radius: 8px;
         &:hover {
           background-color: #ece8ff;
@@ -82,7 +83,7 @@
 
         .icon {
           font-size: 18px;
-          color: #7451f8;
+          color: #a75c35;
 
           &:hover {
             transform: scale(1.05);

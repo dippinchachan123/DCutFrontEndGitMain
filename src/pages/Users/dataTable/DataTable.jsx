@@ -62,7 +62,7 @@ const Datatable = () => {
     {
       field: "name",
       headerName: "Name",
-      width: 200, 
+      width: 400, 
       renderCell : (params) => {
         if(params.row.staff && params.row.role == "Staff"){
           return params.row.staff?.label;

@@ -54,6 +54,7 @@ const TWForm = ({ source ,onClose ,onSubmit,postProcess}) => {
         <div className={styles["form-group"]}>
           <label htmlFor="weight">Weight</label>
           <input
+            style={{width : '340px'}}
             type="number"
             name='weight'
             id="weight"

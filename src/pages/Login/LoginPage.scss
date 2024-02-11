@@ -38,17 +38,17 @@
                 font-size: 32px;
                 width: 400px;
                 height: 20px;
-                background-color: rgb(211, 211, 211);
+                background-color: rgb(255, 255, 233);
             }
         }
         button {
             width: 200px;
             background-color: rgb(118 87 81);
-            height: fit-content;
+            height: 50px;
             padding: 10px;
             border-radius: 5px;
             outline: none;
-          }
+        }
       
         button {
             color: #fff;
@@ -63,6 +63,12 @@
             display: flex;
             flex-direction: row;
             justify-content: end;
+
+            .Submit{
+                padding: 0%;
+                font-family: 'math';
+                font-weight: 100;
+            }
         }
     }
 }

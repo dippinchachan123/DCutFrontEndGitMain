@@ -54,7 +54,7 @@ const Login = () => {
                     <label>Sign In</label>
                     notificationPopup(res.msg,"success")
                     setUser(res.data.data[0]);
-                    navigate(Main.isStaff(res.data.data[0])?(Main.isPostProcess(res.data.data[0])?'/PPkapans/1':'/kapans'):'/home')
+                    navigate(Main.isStaff(res.data.data[0])?(Main.isPostProcess(res.data.data[0])?'/PPkapans/1':'/kapans'):'/kapans')
                 }else{
                     notificationPopup(res.msg,"error")
                 }
@@ -102,7 +102,7 @@ const Login = () => {
 
                 </div>
                 <div className="Bottom">
-                   <button className="Submit" onClick={handleSubmit}>Login</button>
+                   <button className="Submit" onClick={handleSubmit}>LOGIN</button>
                 </div>
             </div>
         </div> 

@@ -3,7 +3,7 @@
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color: #c5c4c4;
     border-radius: 15px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     padding: 45px;
@@ -17,6 +17,11 @@
   
     input{
       width: 450px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 900;
+      color: #2a2a2a;
+      // Add other common styles for all h components here
     }
   
     .Packets{
@@ -66,15 +71,16 @@
       column-gap: 60px;
       font-weight: 700;
       margin: 50px;
+      margin-left: -1%;
 
       .card{
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-        font-size: 28px;
+        font-size: 20px;
         white-space: nowrap;
-        overflow: hidden;
+        overflow : visible;
         text-overflow: ellipsis;
-        min-width: 130px;
-        max-height: 50px;
+        min-width: max-content;
+        max-height: max-content;
         border-radius: 21px;
         background-color: #e3e3e3;
         padding: 7px;
@@ -154,7 +160,7 @@
           cursor: pointer;
           width: 100px;
           height: 30px;
-          background-color: red;
+          background-color: rgb(287,75,53);
           border-radius: 5px;
 
           &:hover{

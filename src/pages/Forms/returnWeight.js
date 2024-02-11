@@ -109,14 +109,14 @@ const ReturnForm = ({ headerDetails , weights ,onClose , onSubmission , postProc
             })
           }
         </div>
-        <div style={{display:'flex',flexDirection:'row',alignItems  : 'flex-start'}}>
-          <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '10pxpx',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Weight : </b> {returnWP.w}</div>
+        <div style={{display:'flex',flexDirection:'row',alignItems  : 'flex-start' ,height : '69px'}}>
+          <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '10px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Weight : </b> {returnWP.w}</div>
           <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '40px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Pieces : </b> {returnWP.p}</div>
         </div>
         <div className={styles['form-buttons']}>
           {!Main.isStaff(user) && <button 
             className='red-button' 
-            style={{fontWeight : '1000',marginLeft : '5px',backgroundColor : 'red'}} 
+            style={{fontWeight : '700',marginLeft : '5px',backgroundColor : 'rgb(287,75,53)'}} 
             onClick={(e) => {
               setData(weights)
               onSubmission(e,null,headerDetails.id,true)
@@ -124,7 +124,7 @@ const ReturnForm = ({ headerDetails , weights ,onClose , onSubmission , postProc
             }>
             Un-Return
           </button>}
-          <button onClick={(e) => onSubmission(e,{weights : data,returnWeight : returnWP.w,returnPieces : returnWP.p},headerDetails.id)}>Submit</button>
+          <button className='Submit' onClick={(e) => onSubmission(e,{weights : data,returnWeight : returnWP.w,returnPieces : returnWP.p},headerDetails.id)}>Submit</button>
         </div>
       </form>
     </div>

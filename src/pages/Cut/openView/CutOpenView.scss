@@ -71,7 +71,7 @@
     .bottom {
 
       -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0);
       padding: 20px;
       margin: 10px 20px;
 
@@ -96,6 +96,11 @@
       }
       .MuiTableBody-root{
         background-color: #ebebeb;
+        border-radius: 25px;
+      }
+      .MuiTableContainer-root{
+        border-radius: 25px;
+        box-shadow: none;
       }
       
       .ProcessContainer{
@@ -155,9 +160,10 @@
       }
 
       &.sink{
+        border-radius: 25px;
         margin-left: 10px;
-        color: rgb(219, 0, 0);
-        border: 1px dotted red;
+        color: #a75c35;
+        border: 2px dotted #a75c35;
       }
     }
   }

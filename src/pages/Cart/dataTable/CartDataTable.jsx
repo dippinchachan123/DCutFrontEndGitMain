@@ -136,10 +136,7 @@ const Datatable = ({ ids, postProcess }) => {
     pdf.setFont("Calibri", "bold");
     pdf.setTextColor(14, 3, 64);
     const processName = (postProcess ? POST_PROCESS_TYPES[process] : process).replaceAll("_", " ")
-    let kapanWgt = await Kapan.getKapanByID(kapanId)
-    kapanWgt =  kapanWgt.data[0].weight
-    console.log("Kapan Weight",kapanWgt)
-    await generateIssuePdf(pdf, { data, to, kapanWgt, cutId, process: processName });
+    await generateIssuePdf(pdf, { data, to, kapanId, cutId, process: processName ,postProcess});
     pdf.save(`issuePacketsTo${to.name.split('-')[1]}.pdf`);
   };
 
@@ -171,7 +168,7 @@ const Datatable = ({ ids, postProcess }) => {
       ele.url = `${config.FRONTEND_DOMAIN}/${postProcess ? "PPcart" : "cart"}/${kapanId}-${cutId}-${process}`
       return ele;
     })
-    await generatePrintPdf(pdf, { data, kapanId, cutId, process: processName });
+    await generatePrintPdf(pdf, { data, kapanId, cutId, process: processName ,postProcess});
     pdf.save(`printPackets_${(postProcess ? POST_PROCESS_TYPES[process] : process).replaceAll("_", " ")}.pdf`);
     setSelectedRowIds(new Set())
   }

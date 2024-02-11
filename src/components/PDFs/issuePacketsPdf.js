@@ -1,13 +1,16 @@
 import 'jspdf-autotable';
 import logoImage from '../../LOGO.jpeg';
+import { Cut } from '../../apis/api.cut';
+import { Kapan } from '../../apis/api.kapan';
 
 
 export const generateIssuePdf = async (pdf, {
   data,
   to,
-  kapanWgt,
+  kapanId,
   process,
-  cutId
+  cutId,
+  postProcess
 }) => {
   // Automatically calculate current date and time
   const currentDate = new Date().toLocaleDateString();
@@ -51,7 +54,7 @@ export const generateIssuePdf = async (pdf, {
 
 
   // Example: Add a table using jspdf-autotable
-  const columns = ['KAPAN WG', 'CUT NO', 'S NO', 'PROCESS', 'CUTTING', 'PCS', 'WEIGHT', 'RATE', 'KA WGT', 'Re SIGN'];
+  const columns = ['KAPAN WGt', 'CUT WGt', 'S NO', 'PROCESS', 'CUTTING', 'PCS', 'WEIGHT', 'RATE', 'KA WGT', 'Re SIGN'];
   let totalPcs = 0;
   let totalWeight = 0;
   let totalKaWeight = 0;
@@ -78,8 +81,17 @@ export const generateIssuePdf = async (pdf, {
     return initials;
   }
 
+  let kapanWgt = await Kapan.getKapanByID(kapanId,postProcess)
+  let cutWgt = 'NA'
+  if(!postProcess){
+    cutWgt = await Cut.getCutByID(kapanId,cutId,postProcess)
+    cutWgt = cutWgt.data[0].cuts[0].weight || "NA"
+  }
+
+  kapanWgt = kapanWgt?.data[0]?.weight || "NA"
+
   const rows = data.map(item =>{ 
-      return [kapanWgt, cutId, item.id, generateShortcut(process), item.cutting?.value || "              ", item.pieces, item.weight, "                ","               ", '']});
+      return [kapanWgt, cutWgt, item.id, generateShortcut(process), item.cutting?.value || "              ", item.pieces, item.weight, "                ","               ", '']});
   rows.push([
     "Total",
     "",

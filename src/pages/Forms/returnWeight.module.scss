@@ -4,7 +4,7 @@
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
+  background-color: rgb(175, 175, 175);
   border-radius: 15px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   padding: 45px;
@@ -15,6 +15,8 @@
 
   /* Define a fixed height for the form container */
   height: 500px; /* Adjust the height as needed */
+  font-size: large;
+
 
   input{
     width: 450px;
@@ -79,7 +81,7 @@
           cursor: pointer;
           width: 100px;
           height: 30px;
-          background-color: rgb(117, 219, 119);
+          background-color: #a26d51;
           border-radius: 5px;
 
           &:hover{
@@ -89,5 +91,21 @@
         }
         
   }
+  .Submit{
+    display: flex;
+    justify-content: end;
+    
+    button{
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      background-color: #a26d51;
+      border-radius: 5px;
+
+      &:hover{
+        transform: scale(1.2);
+      }
+    }
+}
   
 }

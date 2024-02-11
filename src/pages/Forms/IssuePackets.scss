@@ -4,7 +4,7 @@
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color: rgb(175, 175, 175);
     border-radius: 15px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     padding: 45px;
@@ -15,6 +15,13 @@
   
     /* Define a fixed height for the form container */
     height: 500px; /* Adjust the height as needed */
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 900;
+      color: #2a2a2a;
+      // Add other common styles for all h components here
+    }
+    
   
     input{
       width: 450px;
@@ -73,13 +80,16 @@
   
       .label {
         width: 70px;
-        color: gray;
+        color: rgb(54, 54, 54);
+        font-weight: 900;
         text-align: start;
       } 
   
       input{type:'number';width: '450px';height: 20px;border: 2px solid rgb(108, 108, 108);}
       select,
       button {
+        font-size: large;
+        font-weight: 700;
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -128,7 +138,7 @@
           cursor: pointer;
           width: 100px;
           height: 30px;
-          background-color: rgb(117, 219, 119);
+          background-color: #a26d51;
           border-radius: 5px;
 
           &:hover{

@@ -126,7 +126,7 @@ const Single = ({postProcess}) => {
           {showTWForm.visibility && <TransferWeightForm source={showTWForm.source} onClose={toggleForm} onSubmit={handleSubmit} postProcess={postProcess} />}
           <div className="processSimulator">
             <Processes carts={data} kapanId={kapanId} cutId={cutId} onWeightTransfer={handleSubmit} showTWForm={showTWForm} toggleForm={toggleForm} postProcess = {postProcess} />
-            <ArrowRightAltIcon sx={{ fontSize: 100, color: "red" }} />
+            <ArrowRightAltIcon sx={{ fontSize: 100, color: "#a75c35" }} />
             <div className="FinalProducts">
               <div className="ProcessContainer">
                 {postProcess?"":<div className="inventoryItemContainer">

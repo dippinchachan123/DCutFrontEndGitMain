@@ -10,10 +10,12 @@ import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import { DarkModeContext } from "../../context/darkModeContext";
 import Logo from '../../LOGO.jpeg'
 import { useContext, useState } from "react";
+import { useUser } from "../../context/kapanContext";
 
 const Navbar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const [inputText,setInputText] = useState("");
+  const [user,setUser] = useUser();
   
   function handleChange(e){
       const value = e.target.value;
@@ -23,7 +25,7 @@ const Navbar = () => {
   function handleSearch(){
       console.log(inputText)
   }
-  return (
+  return ( user && 
     <div className="navbar">
       <div className="wrapper">
         {/* <div className="search">
@@ -37,10 +39,24 @@ const Navbar = () => {
           </span>
           
         </div> */}
-        <Link to="/home" style={{ textDecoration: "none" }}>
-          <img className={"Logo"} src={Logo} width= '255px' height={'100px'} style={{padding : "5px"}}/>
+        <div className= "LOGO">
+          <img className={"Logo"} src={Logo} width= '255px' height={'fit-content'} style={{padding : "0px"}}/>
           {/* <span className="logo">SBG</span> */}
-        </Link>
+        </div>
+        <div className="topProfile">
+          {/* <div className="item">
+              <img
+                src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                alt=""
+                className="avatar"
+              />
+          </div> */}
+          <div style={{display : "flex",flexDirection : "column",fontSize : 14,fontWeight : 900}}>
+            <div style={{width : 'max-content'}}>{user.name?user.name:user.staff.label}</div>
+            <div style={{width : 'max-content'}}>{user.number}</div>  
+          </div>
+
+        </div>
         <div className="items">
           {/* <div className="item">
             <LanguageOutlinedIcon className="icon" />

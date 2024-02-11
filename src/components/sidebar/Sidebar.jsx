@@ -33,7 +33,7 @@ const Sidebar = () => {
   return user && (
     <div className="sidebar">
       <div className="top">
-        <div className="item">
+        {/* <div className="item">
             <img
               src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
               alt=""
@@ -43,7 +43,7 @@ const Sidebar = () => {
         <div style={{display : "flex",flexDirection : "column",fontSize : 14,fontWeight : 900}}>
           <div>{user.name?user.name:user.staff.label}</div>
           <div>{user.number}</div>  
-        </div>
+        </div> */}
 
       </div>
       <div className="center">
@@ -130,7 +130,7 @@ const Sidebar = () => {
           
         </ul>
       </div>
-      <div className="bottom">
+      {/* <div className="bottom">
         <div
           className="colorOption"
           onClick={() => dispatch({ type: "LIGHT" })}
@@ -139,7 +139,7 @@ const Sidebar = () => {
           className="colorOption"
           onClick={() => dispatch({ type: "DARK" })}
         ></div>
-      </div>
+      </div> */}
     </div>
   );
 };

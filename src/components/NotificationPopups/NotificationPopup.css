@@ -17,11 +17,11 @@
     }
     
     .notification-popup.success {
-        background-color: #00ff00; /* Change to your desired success color */
+        background-color: green; /* Change to your desired success color */
     }
     
     .notification-popup.error {
-        background-color: #ff0000; /* Change to your desired error color */
+        background-color: red; /* Change to your desired error color */
     }
     
     .notification-content {

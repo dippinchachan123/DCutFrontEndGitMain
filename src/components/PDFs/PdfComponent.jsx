@@ -65,7 +65,7 @@ const MyPdfComponent = () => {
   const pdfIframeRef = useRef(null);
 
   const handleGeneratePdf = async () => {
-    const pdf = new jsPDF('l')
+    const pdf = new jsPDF('l', 'mm', [400, 200]);
     // const pdf = new jsPDF('l', 'mm', [400, 200]);
     pdf.setFont("Calibri", "bold");
     // pdf.setFontSize(14);
@@ -77,8 +77,8 @@ const MyPdfComponent = () => {
     const to = {name : "1-Dippin Chachan",number : '9610938979'}
     
     await new Promise(async (resolve) => {
-      await generateIssuePdf(pdf, { data, to ,kapanId : 1,process : "LASER_LOTING",cutId : 1});
-      // await generatePrintPdf(pdf, { data, to ,kapanId : 1,cutId : 1,process:"LASER_LOTING"});
+      // await generateIssuePdf(pdf, { data, to ,kapanId : 1,process : "LASER_LOTING",cutId : 1});
+      await generatePrintPdf(pdf, { data, to ,kapanId : 1,cutId : 1,process:"LASER_LOTING",postProcess : false});
       resolve();
     });
     

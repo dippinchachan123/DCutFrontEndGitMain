@@ -5,6 +5,7 @@ import {
   config
 } from '../../config';
 import { Kapan } from '../../apis/api.kapan';
+import { Cut } from '../../apis/api.cut';
 
 
 
@@ -13,12 +14,13 @@ export const generatePrintPdf = async (pdf, {
   kapanId,
   cutId,
   process,
+  postProcess
 }) => {
   // Set the width and height based on the landscape aspect ratio (2:1)
   const w = 210; // Adjust as needed
   const h = w / 2;
 
-
+  const downShift = 5
 
   // Get the width and height of the PDF after adding the logo
   const pdfWidth = pdf.internal.pageSize.width;
@@ -37,10 +39,11 @@ export const generatePrintPdf = async (pdf, {
     const createdDate = data[i].created.time.split('-')[1]
     const createdTime = data[i].created.time.split('-')[0]
 
+
     pdf.setFontSize(25); // Set the font size for the date and time
     pdf.setFont('normal'); // Reset font style
-    pdf.text(`Date : ${createdDate}`, pdfWidth - 80, 20);
-    pdf.text(`Time : ${createdTime}`, pdfWidth - 80, 30);
+    pdf.text(`Date : ${createdDate}`, pdfWidth - 100, 20 + downShift);
+    pdf.text(`Time : ${createdTime}`, pdfWidth - 100, 30 + downShift);
 
     // Set up the table headers
     const headers = [
@@ -61,21 +64,28 @@ export const generatePrintPdf = async (pdf, {
       return initials;
     }
 
-    let kapanWgt = await Kapan.getKapanByID(kapanId)
-    kapanWgt = kapanWgt.data[0].weight
+    let kapanWgt = await Kapan.getKapanByID(kapanId,postProcess)
+    let cutWgt = 'NA'
+    if(!postProcess){
+      cutWgt = await Cut.getCutByID(kapanId,cutId,postProcess)
+      cutWgt = cutWgt?.data[0]?.cuts[0]?.weight || "NA"
+    }
+
+    kapanWgt = kapanWgt?.data[0]?.weight || "NA"
+
     const rows = [
       ["S NO", {
         content: element.id,
         fontStyle: 'bold',
         fontSize: 22
       }],
-      ["KP WGT", {
+      ["KP WGt", {
         content: kapanWgt,
         fontStyle: 'bold',
         fontSize: 22
       }],
-      ["CUT NO", {
-        content: cutId,
+      ["CUT WGt", {
+        content: cutWgt,
         fontStyle: 'bold',
         fontSize: 22
       }],
@@ -116,7 +126,7 @@ export const generatePrintPdf = async (pdf, {
         right: 0,
         bottom: 0
       }, // Set margins to control x and y
-      startY: pdfHeight / 3.4,
+      startY: pdfHeight / 3.4 +  downShift,
       styles: {
         fontSize: 22,
         fontStyle: 'bold'
@@ -127,7 +137,7 @@ export const generatePrintPdf = async (pdf, {
     const qrCodeData = element.url || config.FRONTEND_DOMAIN; // Replace with your data
     const qrCodeDataURL = await QRCode.toDataURL(qrCodeData)
     // Add content to the PDF
-    pdf.addImage(logoImage, 'PNG', 20, 10, 80, 22);
-    pdf.addImage(qrCodeDataURL, 'PNG', qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
+    pdf.addImage(qrCodeDataURL, 'PNG', qrCodeX, qrCodeY + downShift, qrCodeSize, qrCodeSize);
+    pdf.addImage(logoImage, 'PNG', 19, 10 + downShift, 60, 38);
   }
 }

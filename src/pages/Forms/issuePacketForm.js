@@ -7,7 +7,6 @@ import notificationPopup from '../../helpers/notifications';
 
 
 const IssueForm = ({headerDetails,PacketsData,onClose ,onSubmit,postProcess}) => {
-
   const [data, setData] = useState({
     user : ""
   });

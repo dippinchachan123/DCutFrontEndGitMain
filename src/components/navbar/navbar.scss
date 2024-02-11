@@ -1,4 +1,4 @@
-.navbar {
+  .navbar {
   height: 80px;
   border-bottom: 0.5px solid rgb(231, 228, 228);
   display: flex;
@@ -12,11 +12,62 @@
     padding: 20px;
     display: flex;
     align-items: center;
-    justify-content : center;
+    justify-content: end;
 
+    .LOGO{
+      flex-basis: 42.5%;
+    }
+
+    .topProfile{
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      padding: 10px;
+      padding-left: 22px;
+      padding-right: 22px;
+      margin: 20px;
+      margin-right: -5px;
+      display: flex;
+      width: max-content;
+      height: 45px;
+      background-color: #d7d5cb;
+      border-radius: 25px;
+
+      .item {
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+        position: relative;
+  
+        // .icon {
+        //   font-size: 40px;
+        // }
+  
+        .avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+  
+        // .counter {
+        //   width: 15px;
+        //   height: 15px;
+        //   background-color: red;
+        //   border-radius: 50%;
+        //   color: white;
+        //   display: flex;
+        //   align-items: center;
+        //   justify-content: center;
+        //   font-size: 10px;
+        //   font-weight: bold;
+        //   position: absolute;
+        //   top: -5px;
+        //   right: -5px;
+        // }
+      } 
+    }
+    
     .Logo{
-      height: 70px;
-      width: 120px;
+      height: 82px;
+      width: 150px;
     }
 
     .search {

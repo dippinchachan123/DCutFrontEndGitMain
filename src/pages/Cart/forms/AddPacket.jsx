@@ -37,7 +37,7 @@ const New = ({ postProcess }) => {
     }
     )
 
-    const [data, setData] = useState({ status: "PENDING", weight: 0 });
+    const [data, setData] = useState({ status: "PENDING", weight: 0 ,colorPieces1 : 0,colorPieces2 : 0,colorPieces3 : 0});
     const navigate = useNavigate();
     const title = "Add Main Packet";
 
@@ -101,18 +101,18 @@ const New = ({ postProcess }) => {
                 return { status: false, msg: "Invalid Purity No. !!" }
             }
 
-            if (parseFloat(data.colorPieces1) + parseFloat(data.colorPieces2 || 0) + parseFloat(data.colorPieces3 || 0) != parseFloat(data.pieces)) {
+            if (parseFloat(data.colorPieces1 || 0) + parseFloat(data.colorPieces2 || 0) + parseFloat(data.colorPieces3 || 0) != parseFloat(data.pieces)) {
                 return { status: false, msg: "Color Pieces is not equals to pieces!!" }
             }
 
 
         }
         if (!postProcess && [pc.POLISH_TABLE_LOTING].includes(process)) {
-            if (!data.color) {
+            if (!data.color && !data.color2 && !data.color3) {
                 return { status: false, msg: "Invalid color!!" }
             }
 
-            if (parseFloat(data.colorPieces1 || 0) != parseFloat(data.pieces)) {
+            if (parseFloat(data.colorPieces1 || 0) + parseFloat(data.colorPieces2 || 0) + parseFloat(data.colorPieces3 || 0) != parseFloat(data.pieces)) {
                 return { status: false, msg: "Color Pieces is not equals to pieces!!" }
             }
         }
