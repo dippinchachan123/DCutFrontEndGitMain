@@ -65,8 +65,9 @@ const ReturnForm = ({ headerDetails , weights ,onClose , onSubmission , postProc
       <div style={{display:'flex',flexDirection:'column',alignItems  : 'flex-start'}}>
         <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>PacketID : </b>{headerDetails.packetID}</div>
         <div style={{display : 'flex',columnGap : '10px'}}>
-          <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>{headerDetails.WeightLable} : </b>{headerDetails.weight}</div>
           <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>{headerDetails.PiecesLable} : </b>{headerDetails.pieces}</div>
+
+          <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>{headerDetails.WeightLable} : </b>{headerDetails.weight}</div>
         </div>
       </div>
       
@@ -81,10 +82,19 @@ const ReturnForm = ({ headerDetails , weights ,onClose , onSubmission , postProc
               <div className={styles['form-group']}>
                 <label htmlFor="weight">{(postProcess?POST_PROCESS_TYPES[key]:key).replaceAll("_"," ")}</label>
                 <div style={{display:'flex',columnGap:'185px',marginTop : '5pxpx'}}>
-                  <h5>weight</h5>
                   <h5>pieces</h5>
+                  <h5>weight</h5>
                 </div>
                 <div style={{display:'flex',columnGap:'10px',marginTop : '3px'}}>
+                  <input
+                    type="number"
+                    name={key}
+                    label={"Pieces"}
+                    id =  {key + "piece"}
+                    value={data[key].pieces || 0}
+                    onChange={(e)=> handleChange(e,false)}
+                    placeholder="Enter piece"
+                  />
                   <input
                     type="number"
                     name={key}
@@ -95,23 +105,15 @@ const ReturnForm = ({ headerDetails , weights ,onClose , onSubmission , postProc
                     placeholder="Enter weight"
                     width={'200px'}
                   />
-                  <input
-                    type="number"
-                    name={key}
-                    label={"Pieces"}
-                    id =  {key + "piece"}
-                    value={data[key].pieces || 0}
-                    onChange={(e)=> handleChange(e,false)}
-                    placeholder="Enter piece"
-                  />
+                
                 </div>
             </div>)
             })
           }
         </div>
         <div style={{display:'flex',flexDirection:'row',alignItems  : 'flex-start' ,height : '69px'}}>
-          <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '10px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Weight : </b> {returnWP.w}</div>
           <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '40px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Pieces : </b> {returnWP.p}</div>
+          <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '10px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Weight : </b> {returnWP.w}</div>
         </div>
         <div className={styles['form-buttons']}>
           {!Main.isStaff(user) && <button 

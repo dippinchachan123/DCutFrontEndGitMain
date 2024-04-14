@@ -17,6 +17,9 @@ const Processes = ({carts,kapanId,cutId,onWeightTransfer,showTWForm,toggleForm,p
   const [rows,setRows] = useState([]);
   const navigate = useNavigate();
 
+
+  console.log("Carts : ",carts)
+
   if(postProcess){
     kapanId = 1;
   }

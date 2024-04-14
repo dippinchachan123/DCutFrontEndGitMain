@@ -155,18 +155,20 @@ const Datatable = ({ ids }) => {
           Cart.editSPacketField(kapanId, cutId, process, packetId,id, "loss", { loss: (!dlt) ? rowDetails.weight - formData.weight : 0 })
             .then(res => {
               if (res.err) {
+                toggleRTForm();
                 notificationPopup("Update Successfull!!(Return Weight not changed.)", "success")
               }
               else {
+                toggleRTForm();
                 notificationPopup(success.UPDATE_SUCCESS, "success")
               }
             })
             .catch(err => {
+              toggleRTForm();
               notificationPopup(errors.UPDATE_ERROR, "error")
             })
         }
     })
-    toggleRTForm();
   }
 
   useEffect(() => {

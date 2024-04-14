@@ -53,8 +53,8 @@ const SubReturnForm = ({ headerDetails ,weights,onClose , onSubmission}) => {
       <div style={{display:'flex',flexDirection:'column',alignItems  : 'flex-start'}}>
         <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>PacketID : </b>{headerDetails.packetID}</div>
         <div style={{display : 'flex',columnGap : '10px'}}>
-          <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Weight : </b> {headerDetails.weight}</div>
           <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Pieces : </b> {headerDetails.pieces}</div>
+          <div style={{padding : '5px',margin : '5px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Weight : </b> {headerDetails.weight}</div>
         </div>
       </div>
       
@@ -65,8 +65,8 @@ const SubReturnForm = ({ headerDetails ,weights,onClose , onSubmission}) => {
           {
               <div className={styles['form-group']}>
                 <div style={{display:'flex',columnGap:'185px',marginTop : '5pxpx'}}>
-                  <h5>weight</h5>
                   <h5>pieces</h5>
+                  <h5>weight</h5>
                 </div>
                 <div style={{display:'flex',columnGap:'10px',marginTop : '3px'}}>
                   <input
@@ -94,8 +94,8 @@ const SubReturnForm = ({ headerDetails ,weights,onClose , onSubmission}) => {
           }
         </div>
         <div style={{display:'flex',flexDirection:'row',alignItems  : 'flex-start'}}>
-          <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '10pxpx',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Weight : </b> {data.weight}</div>
           <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '40px',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Pieces : </b> {data.pieces}</div>
+          <div style={{padding : '5px',margin : '5px',marginTop : '10px',marginBottom : '10pxpx',backgroundColor : 'lightgrey',border : '5px',borderRadius : '5px'}}><b>Return Weight : </b> {data.weight}</div>
         </div>
         <div className={styles['form-buttons']}>
           <button className='red-button' style={{fontWeight : '1000',marginLeft : '5px',backgroundColor : 'red'}} onClick={(e) => onSubmission(e,null,headerDetails.id,true)}>Un-Return</button>
